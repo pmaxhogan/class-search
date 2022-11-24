@@ -2,6 +2,7 @@ import {XMLParser} from 'fast-xml-parser';
 import {readFileSync} from 'fs';
 import {load} from 'cheerio';
 import {strict as assert} from "node:assert";
+import * as fs from "fs";
 
 const parser = new XMLParser();
 
@@ -13,16 +14,17 @@ export class ICStateStaleError extends Error {
 }
 
 export function xmlToClassList (xml) {
+    fs.writeFileSync("acts3.xml", xml);
     const parsed = parser.parse(xml);
     const mainField = parsed.PAGE.FIELD.join("\n");
     const parsedAgain = parser.parse(mainField);
 
-    const icStateStale = !parsedAgain.tr.td.DIV;
-    const icStateStale2 = parsedAgain.tr.td.table.tr[0].td === "This page is no longer available.";
+    const icStateStale = !parsedAgain.table.tr.td.DIV;
+    const icStateStale2 = parsedAgain?.table?.tr?.td?.table?.tr[0]?.td === "This page is no longer available.";
     assert.equal(icStateStale, icStateStale2, "icStateStale and icStateStale2 should be equal");
 
     if (icStateStale) {
-        throw new ICStateStaleError(`Failed parse XML because ic state is stale`);
+        throw new ICStateStaleError(`Failed to parse XML because ic state is stale`);
     }
 
     const $ = load(mainField);
@@ -41,6 +43,11 @@ export function xmlToClassList (xml) {
 
         return {classNum, section, daysAndTimes, room, instructor, meetingDates};
     });
-};
+}
 
-console.log(xmlToClassList(readFileSync("acts.xml", "utf8")));
+export function isUnauthenticated(xml){
+    const parsed = parser.parse(xml);
+    return parsed.html.head.title === "UT Dallas SSO Login";
+}
+
+// console.log(xmlToClassList(readFileSync("acts.stale.xml", "utf8")));
