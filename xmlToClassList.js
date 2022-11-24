@@ -43,4 +43,6 @@ const xmlToClassList = xml => {
     });
 };
 
+export default xmlToClassList;
+
 console.log(xmlToClassList(readFileSync("acts.xml", "utf8")));
