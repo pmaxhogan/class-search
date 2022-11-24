@@ -5,14 +5,14 @@ import {strict as assert} from "node:assert";
 
 const parser = new XMLParser();
 
-class ICStateStaleError extends Error {
+export class ICStateStaleError extends Error {
     constructor (message) {
         super(message)
         Error.captureStackTrace(this, this.constructor);
     }
 }
 
-const xmlToClassList = xml => {
+export function xmlToClassList (xml) {
     const parsed = parser.parse(xml);
     const mainField = parsed.PAGE.FIELD.join("\n");
     const parsedAgain = parser.parse(mainField);
@@ -42,7 +42,5 @@ const xmlToClassList = xml => {
         return {classNum, section, daysAndTimes, room, instructor, meetingDates};
     });
 };
-
-export default xmlToClassList;
 
 console.log(xmlToClassList(readFileSync("acts.xml", "utf8")));
