@@ -1,0 +1,26 @@
+{
+  "name": "class-search",
+  "version": "1.0.0",
+  "description": "Orion -> my academics -> view my classes -> Search Schedule of classes Subject: for each - Uncheck show open classes only - maximum units: less than or equal to 99.00",
+  "main": "acn.fetch.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pmaxhogan/class-search.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pmaxhogan/class-search/issues"
+  },
+  "homepage": "https://github.com/pmaxhogan/class-search#readme",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
+    "fast-xml-parser": "^4.0.12",
+    "node-fetch": "^3.3.0"
+  },
+  "type": "module"
+}
