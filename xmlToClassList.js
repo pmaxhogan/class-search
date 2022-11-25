@@ -20,18 +20,38 @@ export class NeedsConfirmationError extends Error {
     }
 }
 
-export function xmlToClassList (xml) {
+export function xmlToClassList (xml, oldNum, suppressMismatch = false) {
     fs.writeFileSync("acts3.xml", xml);
     const parsed = parser.parse(xml);
+
+    const newNum = parsed.PAGE.GENSCRIPT?.find(x => x.includes("ICStateNum.value=")).match(/ICStateNum.value=[0-9]{1,}/g)[0].split("=")[1];
+    if(newNum && oldNum && parseInt(newNum) !== oldNum && !suppressMismatch){
+        console.log("num mismatch", oldNum, newNum);
+        const err = new ICStateStaleError("ICStateNum is stale");
+        err.newNum = newNum;
+        throw err;
+    }
 
     if(!parsed.PAGE.FIELD && parsed.PAGE.GENSCRIPT && parsed.PAGE.SYSVAR){
         throw new NeedsConfirmationError("Student SS Warning");
     }
 
     const mainField = parsed.PAGE.FIELD.join("\n");
-    const parsedAgain = parser.parse(mainField);
+    let parsedAgain;
+    try {
+        parsedAgain = parser.parse(mainField);
+    }catch(e){
+        if(e instanceof TypeError){
+            console.error("TypeError ICSS", e);
+            throw new ICStateStaleError("IC State stale");
+        }
+        throw e;
+    }
+    if(parsedAgain?.H1?.span === "Student SS Warning"){
+        throw new ICStateStaleError("IC State stale");
+    }
 
-    const icStateStale = !parsedAgain.table.tr.td.DIV;
+    const icStateStale = !parsedAgain?.table?.tr?.td?.DIV;
     const icStateStale2 = parsedAgain?.table?.tr?.td?.table?.tr[0]?.td === "This page is no longer available.";
     assert.equal(icStateStale, icStateStale2, "icStateStale and icStateStale2 should be equal");
 
