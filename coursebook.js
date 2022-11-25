@@ -4,6 +4,7 @@
 import fetch from "node-fetch";
 import {load} from "cheerio";
 import {getFromCache, saveToCache} from "./cache.js";
+import {LOCATION_TYPES} from "./consts.js"
 
 const dedupe = arr => [...new Set(arr)];
 
@@ -37,6 +38,7 @@ const noLocationHeaders = ["No Meeting Room", "Independent Study", "Internship",
 const mainPage = await fetchWithCache("https://coursebook.utdallas.edu/");
 const $ = load(mainPage);
 
+const results = [];
 const prexfixOpts = Array.from($("#combobox_cp option")).map(x => x.attribs.value);
 for (const prefixOpt of prexfixOpts) {
     if (!prefixOpt) continue;
@@ -83,20 +85,20 @@ for (const prefixOpt of prexfixOpts) {
         }*/
     });
 
-    const results = JSON.parse(text);
-    if (results.sethtml["#searchresults"].includes("(no items found)")) {
+    const parsedResponse = JSON.parse(text);
+    if (parsedResponse.sethtml["#searchresults"].includes("(no items found)")) {
         console.log("0 results for prefix", prefixOpt);
         continue;
     }
 
-    const expectedNumResults = parseInt(/\(([0-9]+) items\)/.exec(results.sethtml["#searchresults"])[1]);
+    const expectedNumResults = parseInt(/\(([0-9]+) items\)/.exec(parsedResponse.sethtml["#searchresults"])[1]);
     console.log("Expecting " + expectedNumResults + " results");
 
     if (expectedNumResults >= 300) {
         throw new Error("too many results");
     }
 
-    const $results = load(results.sethtml["#sr"]);
+    const $results = load(parsedResponse.sethtml["#sr"]);
     const rows = $results("tbody tr");
     if (rows.length !== expectedNumResults) {
         throw new Error("expected " + expectedNumResults + " results, got " + rows.length);
@@ -108,9 +110,18 @@ for (const prefixOpt of prexfixOpts) {
         const termAndStatus = $results($tds[0]).text().trim();
         const coursePrefixCodeAndSection = $results($tds[1]).text().trim().split(" ");
         const courseTitle = $results($tds[3]).text().trim().replace(/ \([0-9-]+ (Semester Credit Hours|Credits)\)/, "");
-        const courseInstructor = $results($tds[4]).text().trim();
+        const courseInstructor = $results($tds[4]).text().trim().replaceAll(",\n", ",").replaceAll("\n", "");
         const scheduleAndLocationParts = $tds[5].children.map(x => $results(x).text().trim()).join("\n")
             .split("\n").filter(Boolean).map(x => x.trim());
+
+        const isOpen = termAndStatus.endsWith("Open");
+        const isStopped = termAndStatus.endsWith("Stopped");
+        if(!isOpen && !isStopped && !termAndStatus.endsWith("Full")){
+            console.log(courseTitle, courseInstructor, coursePrefixCodeAndSection, scheduleAndLocationParts);
+            throw new Error("Unexpected termAndStatus " + termAndStatus);
+        }
+        const term = termAndStatus.slice(0, 3);
+
 
         const coursePrefix = coursePrefixCodeAndSection[0];
         const courseCode = coursePrefixCodeAndSection[1].split(".")[0];
@@ -126,7 +137,7 @@ for (const prefixOpt of prexfixOpts) {
         } else if (scheduleAndLocationParts.length % 3 === 0 || scheduleAndLocationParts.length === 2) {
             const foundDays = dedupe(scheduleAndLocationParts.filter((x, i) => i % 3 === 0));
             const foundTimes = dedupe(scheduleAndLocationParts.filter((x, i) => i % 3 === 1));
-            const foundLocations = dedupe(scheduleAndLocationParts.filter((x, i) => i % 3 === 2));
+            const foundLocations = dedupe(scheduleAndLocationParts.filter((x, i) => i % 3 === 2)).map(location => location === "No Meeting Room" ? null : location);
             daysList = foundDays;
             times = foundTimes;
             locations = foundLocations;
@@ -138,6 +149,29 @@ for (const prefixOpt of prexfixOpts) {
         for (const location of locations) {
             for (const days of daysList) {
                 for (const time of times) {
+                    let locationObject;
+                    if(location === null){
+                        locationObject = {type: LOCATION_TYPES.NONE};
+                    }else if(location === "See instructor for room assignment"){
+                        locationObject = {type: LOCATION_TYPES.SPECIAL, room: location};
+                    }else{
+                        const split = location.split(" ");
+                        if(split.length !== 2){
+                            throw new Error("Unknown location " + location);
+                        }
+                        const building = split[0];
+                        const split2 = split[1].split(".");
+                        if(split.length !== 2){
+                            throw new Error("Unknown location " + location);
+                        }
+                        const floor = parseInt(split2[0]);
+                        if(isNaN(floor)){
+                            throw new Error("Unknown floor " + floor + " on location " + location);
+                        }
+                        const room = split2[1];
+                        locationObject = {type: LOCATION_TYPES.ROOM, building, room, floor};
+                    }
+
                     const resultObj = {
                         course: {
                             prefix: coursePrefix,
@@ -149,16 +183,19 @@ for (const prefixOpt of prexfixOpts) {
                             instructor: courseInstructor,
                             days,
                             time,
-                            location
+                            location: locationObject,
+                            term,
+                            isOpen,
+                            isStopped
                         }
                     };
 
-                    console.log(JSON.stringify(resultObj));
+                    if(location === "See instructor for room assignment") console.log(resultObj);
+
+                    results.push(resultObj);
                 }
             }
         }
     });
 }
-
-
-
+console.log([... new Set(results.map(x=>x.section.location).filter(Boolean).map(x=>JSON.stringify(x)))].sort().join("\n"));
