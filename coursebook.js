@@ -4,7 +4,7 @@
 import fetch from "node-fetch";
 import {load} from "cheerio";
 import {getFromCache, saveToCache} from "./cache.js";
-import {LOCATION_TYPES} from "./consts.js"
+import {LOCATION_TYPES, DAYS_TYPES} from "./consts.js"
 
 const dedupe = arr => [...new Set(arr)];
 
@@ -172,6 +172,22 @@ for (const prefixOpt of prexfixOpts) {
                         locationObject = {type: LOCATION_TYPES.ROOM, building, room, floor};
                     }
 
+                    let daysObject;
+                    if(days === null){
+                        daysObject = {type: DAYS_TYPES.NONE};
+                    }else if(/^\d{4}-\d{2}-\d{2} [A-Z][a-z]+$/.test(days)){// 2023-05-03 Wednesday
+                        daysObject = {type: DAYS_TYPES.ONCE, when: days.split(" ")[0]}
+                    }else{// Monday & Friday
+                        daysObject = {type: DAYS_TYPES.RECURRING, when: days.split(/\W/).filter(Boolean)};
+                    }
+
+                    let start, end;
+                    if(time) {
+                        const timeSplit = time.split(" - ");
+                        if (timeSplit.length !== 2) throw new Error("Unknown time " + timeSplit);
+                        [start, end] = timeSplit;
+                    }
+
                     const resultObj = {
                         course: {
                             prefix: coursePrefix,
@@ -181,8 +197,8 @@ for (const prefixOpt of prexfixOpts) {
                         section: {
                             number: courseSection,
                             instructor: courseInstructor,
-                            days,
-                            time,
+                            days: daysObject,
+                            time: time ? {start, end} : null,
                             location: locationObject,
                             term,
                             isOpen,
@@ -198,4 +214,4 @@ for (const prefixOpt of prexfixOpts) {
         }
     });
 }
-console.log([... new Set(results.map(x=>x.section.location).filter(Boolean).map(x=>JSON.stringify(x)))].sort().join("\n"));
+console.log([... new Set(results.map(x=>x.section.time).filter(Boolean).map(x=>JSON.stringify(x)))].sort().join("\n"));

@@ -29,6 +29,28 @@ Location
     room: "621"
 }
 ```
+Days
+```js
+{
+    type: "none"
+}
+{
+    type: "once",
+    when: "2023-01-25" // YYYY-MM-DD
+}
+{
+    type: "recurring",
+    when: ["Monday", "Wednesday"]
+}
+```
+Time
+```
+null
+{
+    start: "12:00pm",
+    end: "2:15pm"
+}
+```
 
 ## Assumptions & limitations
 - weird things happen after midnight
