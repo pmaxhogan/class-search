@@ -1,12 +1,14 @@
-import {fetchWithCache} from "../fetchWithCache.js";
+import {fetchWithCache} from "../util/fetchWithCache.js";
+import {getCookies} from "./getCookies.js";
 
-export async function fetchPrefix(prefix, term, gradLevel = null) {
+export async function fetchPrefix(prefix, term, gradLevel = null, forceLogin = false) {
     const ourOpts = [term, prefix, "site_utdm"];
     if (gradLevel) ourOpts.push(gradLevel);
     const searchBody = "action=search&" + ourOpts.map(x => `s%5B%5D=${x}`).join("&");
-    console.log("Searching for prefix", prefix, "with options", ourOpts);
+    console.log("Searching for prefix", prefix, "with options", ourOpts, forceLogin);
 
-    const text = await fetchWithCache("https://coursebook.utdallas.edu/clips/clip-cb11-hat.zog", {
+    // ugly hack to force hash mismatch / re-request
+    const text = await fetchWithCache("https://coursebook.utdallas.edu/clips/clip-cb11-hat.zog" + (forceLogin ? "?" : ""), {
         "headers": {
             "accept": "*/*",
             "accept-language": "en-US,en;q=0.9",
@@ -16,8 +18,8 @@ export async function fetchPrefix(prefix, term, gradLevel = null) {
             "sec-fetch-mode": "cors",
             "sec-fetch-site": "same-origin",
             "x-requested-with": "XMLHttpRequest",
-            "cookie": "PTGSESSID=p4d6c2k0nas63sqp3skp7k19kh",
-            "Referer": "https://coursebook.utdallas.edu/"
+            "cookie": getCookies(),
+            "Referer": "https://coursebook.utdallas.edu/",
         },
         "body": searchBody,
         "method": "POST"

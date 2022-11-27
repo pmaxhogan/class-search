@@ -11,7 +11,7 @@ export async function fetchWithCache(url, options = {}) {
         console.log("using cached", url);
         return cached;
     }
-    console.log("fetching", url);
+    console.log("fetching from network", url);
     const res = await fetch(url, options);
     const text = await res.text();
     if (res.status === 200) {

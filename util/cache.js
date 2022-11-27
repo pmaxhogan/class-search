@@ -5,7 +5,8 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const defaultCacheFolder = path.join(__dirname, "cache");
+const defaultCacheFolder = path.join(__dirname, "..", "cache");
+console.log("Preparing cache folder", defaultCacheFolder);
 
 async function prepareFolder(cacheKey, cacheFolder = defaultCacheFolder){
     const sha256 = crypto.createHash("sha256");
@@ -19,7 +20,7 @@ async function prepareFolder(cacheKey, cacheFolder = defaultCacheFolder){
 
 export async function getFromCache(cacheKey, cacheFolder = defaultCacheFolder){
     const dest = await prepareFolder(cacheKey, cacheFolder);
-    console.log("reading from", dest);
+    console.log("searching for", dest);
     try {
         const readText = await fs.readFile(dest, "utf8");
         return JSON.parse(readText);
@@ -32,5 +33,6 @@ export async function getFromCache(cacheKey, cacheFolder = defaultCacheFolder){
 }
 export async function saveToCache(cacheKey, props, cacheFolder = defaultCacheFolder){
     const dest = await prepareFolder(cacheKey, cacheFolder);
+    console.log("saving to", dest);
     await fs.writeFile(dest, JSON.stringify(props));
 }

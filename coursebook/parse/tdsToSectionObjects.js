@@ -7,7 +7,7 @@ import {
     LOCATION_TYPES,
     noLocationHeaders,
     specialLocations
-} from "../consts.js";
+} from "../../consts.js";
 
 const dedupe = arr => [...new Set(arr)];
 

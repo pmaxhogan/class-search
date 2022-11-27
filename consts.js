@@ -16,3 +16,6 @@ export const gradLevels = {
     undergraduate: "clevel_u",
     graduate: "clevel_g",
 };
+export const loginStr = "<title>COMET AUTH - University of Texas at Dallas - Web Authentication</title>";
+export const sessionId = "pt3rakklk0qaihq5lq4pg7klid";
+export const mismatchIgnore = ["cp_epcs", "cp_fren", "cp_germ", "cp_isah", "cp_mils", "cp_mthe", "cp_ppol", "cp_rels", "cp_smed"]

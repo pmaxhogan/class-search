@@ -1,4 +1,4 @@
-import {getFromCache, saveToCache} from "./cache.js";
+import {getFromCache, saveToCache} from "./util/cache.js";
 
 export async function saveCookie(cookie){
     await saveToCache("utd-cookie", cookie);
