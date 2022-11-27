@@ -7,6 +7,8 @@ Subject: for each
 
 ## TODO:
 - [x] add fetch() with caching
+- [ ] unit tests
+- [ ] handle days before / after end of term
 - [ ] export to db
 - [ ] make db mark all old classes as pendingRemoval, add new classes and unset pendingRemoval, then delete all pendingRemoval
 - [ ] what is happening with mismatchIgnore? (why do json exports not include some classes?)

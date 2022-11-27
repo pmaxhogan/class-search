@@ -4,7 +4,7 @@
   "description": "Orion -> my academics -> view my classes -> Search Schedule of classes Subject: for each - Uncheck show open classes only - maximum units: less than or equal to 99.00",
   "main": "acn.fetch.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "NODE_OPTIONS='--experimental-vm-modules --experimental-specifier-resolution=node' jest"
   },
   "repository": {
     "type": "git",
@@ -24,5 +24,8 @@
     "json-2-csv": "^3.18.0",
     "node-fetch": "^3.3.0"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "jest": "^29.3.1"
+  }
 }
