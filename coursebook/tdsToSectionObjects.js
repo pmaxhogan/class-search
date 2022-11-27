@@ -1,29 +1,50 @@
 import {load} from "cheerio";
 
-import {courseLocationHeaders, DAYS_TYPES, LOCATION_TYPES, noLocationHeaders, specialLocations} from "../consts.js";
+import {
+    courseLocationHeaders,
+    DAYS_TYPES,
+    daysOfWeek,
+    LOCATION_TYPES,
+    noLocationHeaders,
+    specialLocations
+} from "../consts.js";
 
 const dedupe = arr => [...new Set(arr)];
 
-export function tdsToSectionObjects(tds) {
+const isNormalTimes = timeString => /^[0-9]{1,2}:[0-9]{2}[ap]m - [0-9]{1,2}:[0-9]{2}[ap]m$/.test(timeString);
+
+const splitIntoDays = days => days.split(/\W/).filter(Boolean);
+const isNormalDays = daysString => splitIntoDays(daysString).every(day => daysOfWeek.includes(day));
+const isSpecialDays = daysString => /^\d{4}-\d{2}-\d{2} (Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday)$/.test(daysString);
+const isDays = daysString => isNormalDays(daysString) || isSpecialDays(daysString);
+
+export function tdsToSectionObjects(tds, prefix) {
     const termAndStatus = load(tds[0]).text().trim();
     const coursePrefixCodeAndSection = load(tds[1]).text().trim().split(" ");
-    const courseTitle = load(tds[3]).text().trim().replace(/ \([0-9-]+ (Semester Credit Hours|Credits)\)/, "");
+    const courseTitle = load(tds[3]).text().trim().replace(/ \([0-9-]+ (Semester Credit Hours|Credits)\)/, "").replaceAll("  ", " ");
     const courseInstructor = load(tds[4]).text().trim().replaceAll(",\n", ",").replaceAll("\n", "");
     const scheduleAndLocationParts = tds[5].children.map(x => load(x).text().trim()).join("\n")
         .split("\n").filter(Boolean).map(x => x.trim());
 
     const isOpen = termAndStatus.endsWith("Open");
     const isStopped = termAndStatus.endsWith("Stopped");
-    if (!isOpen && !isStopped && !termAndStatus.endsWith("Full")) {
+    const isCancelled = termAndStatus.endsWith("Cancelled");
+    if (!isOpen && !isStopped && !isCancelled && !termAndStatus.endsWith("Full")) {
         console.log(courseTitle, courseInstructor, coursePrefixCodeAndSection, scheduleAndLocationParts);
         throw new Error("Unexpected termAndStatus " + termAndStatus);
     }
     const term = termAndStatus.slice(0, 3);
 
-
-    const coursePrefix = coursePrefixCodeAndSection[0];
-    const courseCode = coursePrefixCodeAndSection[1].split(".")[0];
-    const courseSection = coursePrefixCodeAndSection[1].split(".")[1];
+    let coursePrefix, courseCode, courseSection;
+    if(coursePrefixCodeAndSection.length === 1 && coursePrefixCodeAndSection[0] === ".001") {
+        coursePrefix = prefix;
+        courseCode = null;
+        courseSection = "001";
+    }else{
+        coursePrefix = coursePrefixCodeAndSection[0];
+        courseCode = coursePrefixCodeAndSection[1].split(".")[0];
+        courseSection = coursePrefixCodeAndSection[1].split(".")[1];
+    }
 
     let daysList, times, locations;
 
@@ -33,13 +54,19 @@ export function tdsToSectionObjects(tds) {
     if (noLocationHeaders.includes(scheduleAndLocationParts[0]) || !scheduleAndLocationParts.length) {
         daysList = times = locations = [null];
     } else if (scheduleAndLocationParts.length % 3 === 0 || scheduleAndLocationParts.length === 2) {
-        const foundDays = dedupe(scheduleAndLocationParts.filter((x, i) => i % 3 === 0));
-        const foundTimes = dedupe(scheduleAndLocationParts.filter((x, i) => i % 3 === 1));
-        const foundLocations = dedupe(scheduleAndLocationParts.filter((x, i) => i % 3 === 2)).map(location => location === "No Meeting Room" ? null : location);
+        const foundDays = dedupe(scheduleAndLocationParts.filter((x, i) => isDays(x)));
+        const foundTimes = dedupe(scheduleAndLocationParts.filter((x, i) => isNormalTimes(x)));
+        const foundLocations = dedupe(scheduleAndLocationParts.filter((x, i) => i === 2)).map(location => location === "No Meeting Room" ? null : location);
+
+        if(!foundLocations.every(location => location === null || (!isDays(location) && !isNormalTimes(location)))) {
+            console.log(scheduleAndLocationParts, foundDays, foundTimes, foundLocations);
+            throw new Error("Unexpected location " + foundLocations);
+        }
+
         daysList = foundDays;
         times = foundTimes;
         locations = foundLocations;
-    } else if(scheduleAndLocationParts.every(location => specialLocations.includes(location))){
+    } else if(scheduleAndLocationParts.every(location => specialLocations.includes(location))){// no date or time specified, just special location (also true for [])
         daysList = times = [null];
         locations = scheduleAndLocationParts;
     } else {
@@ -54,7 +81,7 @@ export function tdsToSectionObjects(tds) {
                 let locationObject;
                 if (location === null) {
                     locationObject = {type: LOCATION_TYPES.NONE};
-                } else if (location === "See instructor for room assignment") {
+                } else if (specialLocations.includes(location)) {
                     locationObject = {type: LOCATION_TYPES.SPECIAL, room: location};
                 } else {
                     const split = location.split(" ");
@@ -77,16 +104,19 @@ export function tdsToSectionObjects(tds) {
                 let daysObject;
                 if (days === null) {
                     daysObject = {type: DAYS_TYPES.NONE};
-                } else if (/^\d{4}-\d{2}-\d{2} [A-Z][a-z]+$/.test(days)) {// 2023-05-03 Wednesday
+                } else if (isSpecialDays(days)) {// 2023-05-03 Wednesday
                     daysObject = {type: DAYS_TYPES.ONCE, when: days.split(" ")[0]};
                 } else {// Monday & Friday
-                    daysObject = {type: DAYS_TYPES.RECURRING, when: days.split(/\W/).filter(Boolean)};
+                    daysObject = {type: DAYS_TYPES.RECURRING, when: splitIntoDays(days)};
                 }
 
                 let start, end;
                 if (time) {
                     const timeSplit = time.split(" - ");
-                    if (timeSplit.length !== 2) throw new Error("Unknown time " + timeSplit);
+                    if (timeSplit.length !== 2){
+                        console.log(scheduleAndLocationParts, daysList, times, locations);
+                        throw new Error("Unknown time " + timeSplit);
+                    }
                     [start, end] = timeSplit;
                 }
 
@@ -104,7 +134,8 @@ export function tdsToSectionObjects(tds) {
                         location: locationObject,
                         term,
                         isOpen,
-                        isStopped
+                        isStopped,
+                        isCancelled
                     }
                 };
 

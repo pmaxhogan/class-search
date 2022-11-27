@@ -10,7 +10,9 @@ Subject: for each
 - [ ] handle big classes
 - [ ] export to db
 - [ ] make db mark all old classes as pendingRemoval, add new classes and unset pendingRemoval, then delete all pendingRemoval
-- [ ] what is a "stopped" section, and do they reserve rooms?
+- [ ] what is a "stopped" section, and do they occupy an otherwise unoccupied room?
+- [ ] what is a "None-enroll" course and does it occupy an otherwise unoccupied room?
+- [ ] what is a "closed" course and does it occupy an otherwise unoccupied room?
 
 ## Types
 Location
