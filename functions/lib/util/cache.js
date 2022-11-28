@@ -6,7 +6,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const defaultCacheFolder = path.join(__dirname, "..", "..", "cache");
-console.log("Preparing cache folder", defaultCacheFolder);
 
 async function prepareFolder(cacheKey, cacheFolder = defaultCacheFolder){
     const sha256 = crypto.createHash("sha256");
