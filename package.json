@@ -21,6 +21,7 @@
     "cheerio": "^1.0.0-rc.12",
     "dotenv": "^16.0.3",
     "fast-xml-parser": "^4.0.12",
+    "firebase-admin": "^11.3.0",
     "json-2-csv": "^3.18.0",
     "node-fetch": "^3.3.0",
     "yargs": "^17.6.2"
