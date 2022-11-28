@@ -1,16 +1,12 @@
-import * as dotenv from "dotenv"
-dotenv.config();
-
+import * as dotenv from "dotenv";
 import yargs from "yargs";
 import {hideBin} from "yargs/helpers";
-import {
-    nextMeetingInLocation,
-    nextMeetingsInLocation,
-    roomInBuildingsByNextMeeting
-} from "../findRooms/nextMeetingInLocation.js";
+import {nextMeetingsInLocation, roomInBuildingsByNextMeeting} from "../findRooms/nextMeetingInLocation.js";
 import {getBuildings} from "../findRooms/getBuildings.js";
 import {getRoomsInBuilding} from "../findRooms/getRooms.js";
 import {writeSections} from "../coursebook/getSections.js";
+
+dotenv.config();
 
 yargs(hideBin(process.argv))
     .command("study", "find next class in a room", (yargs) => {
@@ -58,7 +54,8 @@ yargs(hideBin(process.argv))
         yargs.demandCommand(1);
     }, async () => {
     })
-    .command("writesections", "write all sections to disk", () => {}, async () => {
+    .command("writesections", "write all sections to disk", () => {
+    }, async () => {
         await writeSections(process.env.COURSE_TERM);
     })
     .demandCommand(1)

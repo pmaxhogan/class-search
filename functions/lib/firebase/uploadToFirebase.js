@@ -1,8 +1,9 @@
-import * as dotenv from "dotenv"
-dotenv.config();
-
+import * as dotenv from "dotenv";
 import {getSectionsFromDisk, writeSections} from "../coursebook/getSections.js";
 import {db, storage} from "./initFirebase.js";
+
+dotenv.config();
+
 await writeSections(process.env.COURSE_TERM);
 
 
@@ -11,7 +12,7 @@ const locationsEqual = (a, b) => a.room === b.room && a.building === b.building 
 const courseSections = await getSectionsFromDisk();
 const locations = [];
 for (const courseSection of courseSections) {
-    if(!locations.some(location => locationsEqual(location, courseSection.section.location))) {
+    if (!locations.some(location => locationsEqual(location, courseSection.section.location))) {
         locations.push(courseSection.section.location);
     }
 }
@@ -19,12 +20,12 @@ for (const courseSection of courseSections) {
 
 const dbLocations = [];
 (await db.collection("locations").get()).forEach(doc => {
-    dbLocations.push({id: doc.id, ... doc.data()});
+    dbLocations.push({id: doc.id, ...doc.data()});
 });
 
 
 for (const location of locations) {
-    if(location.building === "JSOM" && location.floor === "1") {
+    if (location.building === "JSOM" && location.floor === "1") {
         console.log(location);
     }
     const dbLocation = dbLocations.find(dbLocation => locationsEqual(dbLocation, location));
@@ -34,7 +35,7 @@ for (const location of locations) {
     }
 }
 
-for(const dbLocation of dbLocations) {
+for (const dbLocation of dbLocations) {
     const location = locations.find(location => locationsEqual(location, dbLocation));
     if (!location) {
         console.log("removing location " + dbLocation.id + " " + JSON.stringify(dbLocation));

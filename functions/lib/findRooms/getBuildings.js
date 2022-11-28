@@ -7,7 +7,7 @@ export async function getBuildings() {
     const buildings = new Set();
 
     for (const courseSection of sections) {
-        if(courseSection.section.location.type === LOCATION_TYPES.ROOM) {
+        if (courseSection.section.location.type === LOCATION_TYPES.ROOM) {
             buildings.add(courseSection.section.location.building);
         }
     }

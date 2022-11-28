@@ -7,10 +7,13 @@ export async function findSectionsInLocation({building, room, floor}) {
 }
 
 export async function nextMeetingsInLocation({building, room, floor}, referenceDateTime = null) {
-    if(!referenceDateTime) referenceDateTime = new Date();
+    if (!referenceDateTime) referenceDateTime = new Date();
 
     const sections = await findSectionsInLocation({building, room, floor});
-    const courseSectionsHere = sections.map(courseSection => ({nextMeeting: nextMeeting(courseSection, referenceDateTime), courseSection})).filter(meeting => meeting.nextMeeting);
+    const courseSectionsHere = sections.map(courseSection => ({
+        nextMeeting: nextMeeting(courseSection, referenceDateTime),
+        courseSection
+    })).filter(meeting => meeting.nextMeeting);
     return sortNextMeetings(courseSectionsHere);
 }
 
@@ -20,20 +23,20 @@ export async function nextMeetingInLocation({building, room, floor}, referenceDa
 }
 
 export function sortNextMeetings(roomsAndMeetings) {
-    return roomsAndMeetings.sort((a, b) => (a.nextMeeting || Number.MAX_SAFE_INTEGER) - (b.nextMeeting || Number.MAX_SAFE_INTEGER))
+    return roomsAndMeetings.sort((a, b) => (a.nextMeeting || Number.MAX_SAFE_INTEGER) - (b.nextMeeting || Number.MAX_SAFE_INTEGER));
 }
 
 export function sortNextMeetingsDeepReversed(roomsAndMeetings) {
-    return roomsAndMeetings.sort((a, b) => (b.nextMeeting.nextMeeting || Number.MAX_SAFE_INTEGER) - (a.nextMeeting.nextMeeting || Number.MAX_SAFE_INTEGER))
+    return roomsAndMeetings.sort((a, b) => (b.nextMeeting.nextMeeting || Number.MAX_SAFE_INTEGER) - (a.nextMeeting.nextMeeting || Number.MAX_SAFE_INTEGER));
 }
 
 export async function roomInBuildingsByNextMeeting(building, refrenceDateTime = null) {
-    if(!refrenceDateTime) refrenceDateTime = new Date();
+    if (!refrenceDateTime) refrenceDateTime = new Date();
 
     const rooms = await getRoomsInBuilding(building);
 
     const roomsAndMeetingsProms = [];
-    for(const room of rooms) {
+    for (const room of rooms) {
         const nextMeeting = await nextMeetingInLocation(room, refrenceDateTime);
         roomsAndMeetingsProms.push({room, nextMeeting});
     }

@@ -1,9 +1,6 @@
 import {load} from "cheerio";
-import fetch from "node-fetch";
-import {tdsToSectionObjects} from "../parse/tdsToSectionObjects.js";
 import {fetchPrefix} from "../fetchPrefix.js";
 import {gradLevels, loginStr, mismatchIgnore} from "../../consts.js";
-import {writeFileSync} from "fs";
 import {fetchWithCache} from "../../util/fetchWithCache.js";
 import {exportListToResults} from "../parse/exportListToResults.js";
 import {getCookies} from "../getCookies.js";
@@ -18,7 +15,7 @@ export async function fetchSectionsInPrefixViaExport(prefixOpt, term, gradLevel 
         return;
     }
 
-    if(parsedResponse.sethtml["#searchresults"].includes("please refine search")) {
+    if (parsedResponse.sethtml["#searchresults"].includes("please refine search")) {
         console.log("refine search for prefix", prefixOpt);
         const undergradResults = await fetchSectionsInPrefixViaExport(prefixOpt, term, gradLevels.undergraduate, forceLogin);
         const gradResults = await fetchSectionsInPrefixViaExport(prefixOpt, term, gradLevels.graduate, forceLogin);
@@ -33,22 +30,21 @@ export async function fetchSectionsInPrefixViaExport(prefixOpt, term, gradLevel 
     }
 
 
-
     const $header = load(parsedResponse.sethtml["#searchresults"]);
     const downloadLink = $header(".button-link").attr("href");
-    if(!downloadLink){
+    if (!downloadLink) {
         return fetchSectionsInPrefix(prefixOpt, term, gradLevel, false);
     }
 
-    if(downloadLink === "https://coursebook.utdallas.edu/login/coursebook") {
-        if(forceLogin) {
+    if (downloadLink === "https://coursebook.utdallas.edu/login/coursebook") {
+        if (forceLogin) {
             throw new Error("Failed to login ", downloadLink);
-        }else{
+        } else {
             return fetchSectionsInPrefixViaExport(prefixOpt, term, gradLevel, true);
         }
     }
     const hash = downloadLink.split("/")[3];
-    if(hash.length !== 40) {
+    if (hash.length !== 40) {
         throw new Error("Invalid hash " + downloadLink);
     }
     const url = `https://ptg.utdallas.edu/reportmonkey/cb11-export/${hash}/${hash}/json`;
@@ -57,16 +53,16 @@ export async function fetchSectionsInPrefixViaExport(prefixOpt, term, gradLevel 
             "Cookie": getCookies()
         }
     });
-    if(text.includes(loginStr)){
-        if(forceLogin) {
+    if (text.includes(loginStr)) {
+        if (forceLogin) {
             throw new Error("Failed to login, auth token expired");
-        }else{
+        } else {
             return fetchSectionsInPrefixViaExport(prefixOpt, term, gradLevel, true);
         }
     }
     const parsed = JSON.parse(text);
 
-    if(parsed["report_data"].length !== expectedNumResults && !(expectedNumResults === 2 && parsed["report_data"].length === 0 && mismatchIgnore.includes(prefixOpt))) {
+    if (parsed["report_data"].length !== expectedNumResults && !(expectedNumResults === 2 && parsed["report_data"].length === 0 && mismatchIgnore.includes(prefixOpt))) {
         throw new Error("Expected " + expectedNumResults + " results, got " + parsed["report_data"].length);
     }
 

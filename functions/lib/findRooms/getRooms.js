@@ -8,7 +8,7 @@ export async function getRooms() {
     const rooms = new Set();
 
     for (const courseSection of sections) {
-        if(courseSection.section.location.type === LOCATION_TYPES.ROOM) {
+        if (courseSection.section.location.type === LOCATION_TYPES.ROOM) {
             rooms.add(JSON.stringify(courseSection.section.location));
         }
     }
@@ -17,7 +17,7 @@ export async function getRooms() {
 }
 
 export async function getRoomsInBuilding(building) {
-    if(!(await getBuildings()).includes(building)) throw new Error(`Building ${building} does not exist`);
+    if (!(await getBuildings()).includes(building)) throw new Error(`Building ${building} does not exist`);
 
     const rooms = await getRooms();
     return rooms.filter(room => room.building === building);

@@ -1,5 +1,4 @@
 import {DAYS_TYPES, daysOfWeek} from "../consts.js";
-import {readFile} from "fs/promises";
 
 export const cloneDate = date => new Date(date.getTime());
 
@@ -8,10 +7,10 @@ export const timeToComponents = time => {
     hours = parseInt(hours);
     minutes = parseInt(minutes);
     const isPm = time.slice(-2) === "pm";
-    if(isPm && hours !== 12) {
+    if (isPm && hours !== 12) {
         hours += 12;
     }
-    if(!isPm && hours === 12) {
+    if (!isPm && hours === 12) {
         hours = 0;
     }
     return [hours, minutes];
@@ -24,7 +23,7 @@ export const absoluteDayTimeToDate = (day, time) => {
 };
 
 export const nextMeetingOfOccurrence = (start, end, referenceDateTime, endToleranceMs) => {
-    if(!endToleranceMs) endToleranceMs = 0;
+    if (!endToleranceMs) endToleranceMs = 0;
 
     const comparisonTime = cloneDate(referenceDateTime);
     comparisonTime.setMilliseconds(comparisonTime.getMilliseconds() - endToleranceMs);

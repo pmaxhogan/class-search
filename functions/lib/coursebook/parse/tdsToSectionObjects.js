@@ -1,7 +1,7 @@
 import {load} from "cheerio";
 
-import {courseLocationHeaders, DAYS_TYPES, LOCATION_TYPES, noLocationHeaders, specialLocations} from "../../consts.js";
-import {isDays, isTimes, isSpecialDays, splitIntoDays} from "./daysTimesParse.js";
+import {DAYS_TYPES, LOCATION_TYPES, specialLocations} from "../../consts.js";
+import {isSpecialDays, splitIntoDays} from "./daysTimesParse.js";
 import getDaysTimesLocations from "./getDaysTimesLocations.js";
 
 export function tdsToSectionObjects(tds, prefix) {
@@ -22,11 +22,11 @@ export function tdsToSectionObjects(tds, prefix) {
     const term = termAndStatus.slice(0, 3);
 
     let coursePrefix, courseCode, courseSection;
-    if(coursePrefixCodeAndSection.length === 1 && coursePrefixCodeAndSection[0] === ".001") {
+    if (coursePrefixCodeAndSection.length === 1 && coursePrefixCodeAndSection[0] === ".001") {
         coursePrefix = prefix;
         courseCode = null;
         courseSection = "001";
-    }else{
+    } else {
         coursePrefix = coursePrefixCodeAndSection[0];
         courseCode = coursePrefixCodeAndSection[1].split(".")[0];
         courseSection = coursePrefixCodeAndSection[1].split(".")[1];
@@ -38,7 +38,7 @@ export function tdsToSectionObjects(tds, prefix) {
     for (const daysTimesLocation of daysTimesLocationList) {
         let {days, times, location} = daysTimesLocation;
 
-        if(location.startsWith("SOM")) location = "J" + location;
+        if (location.startsWith("SOM")) location = "J" + location;
 
         let locationObject;
         if (location === null) {
@@ -75,7 +75,7 @@ export function tdsToSectionObjects(tds, prefix) {
         let start, end;
         if (times) {
             const timeSplit = times.split(" - ");
-            if (timeSplit.length !== 2){
+            if (timeSplit.length !== 2) {
                 console.log(scheduleAndLocationParts, daysList, times, locations);
                 throw new Error("Unknown time " + timeSplit);
             }

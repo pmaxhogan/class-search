@@ -1,4 +1,5 @@
-import * as dotenv from "dotenv"
+import * as dotenv from "dotenv";
+
 dotenv.config();
 
 export const LOCATION_TYPES = {
@@ -24,4 +25,4 @@ export const gradLevels = {
 };
 export const loginStr = "<title>COMET AUTH - University of Texas at Dallas - Web Authentication</title>";
 export const sessionId = process.env.SESSION_ID;
-export const mismatchIgnore = ["cp_epcs", "cp_fren", "cp_germ", "cp_isah", "cp_mils", "cp_mthe", "cp_ppol", "cp_rels", "cp_smed"]
+export const mismatchIgnore = ["cp_epcs", "cp_fren", "cp_germ", "cp_isah", "cp_mils", "cp_mthe", "cp_ppol", "cp_rels", "cp_smed"];

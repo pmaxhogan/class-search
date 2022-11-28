@@ -1,19 +1,18 @@
-import * as dotenv from "dotenv"
-dotenv.config();
-
-import {readFile} from "fs/promises";
+import * as dotenv from "dotenv";
+import {mkdir, readFile} from "fs/promises";
 import {load} from "cheerio";
 import fetch from "node-fetch";
 import {writeFileSync} from "fs";
 import {fetchSectionsInPrefix} from "./fetchSections/inPrefix.js";
-import {fetchSectionsInPrefixViaExport} from "./fetchSections/inPrefixViaExport.js";
-import json2csv from 'json-2-csv';
-const { json2csvAsync } = json2csv;
-import {mkdir} from "fs/promises";
+import json2csv from "json-2-csv";
+
+dotenv.config();
+
+const {json2csvAsync} = json2csv;
 
 async function getSections(term) {
     const mainPageReq = await fetch("https://coursebook.utdallas.edu/");
-    console.log(mainPageReq.headers.get('set-cookie'));
+    console.log(mainPageReq.headers.get("set-cookie"));
 
     const mainPage = await mainPageReq.text();
     const $ = load(mainPage);
@@ -27,7 +26,7 @@ async function getSections(term) {
     return results;
 }
 
-export async function writeSections(term){
+export async function writeSections(term) {
     const allSections = await getSections(term);
     await mkdir("export", {recursive: true});
     writeFileSync(`export/allSections.json`, JSON.stringify(allSections));
