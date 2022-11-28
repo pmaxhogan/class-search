@@ -145,5 +145,7 @@ describe("nextMeeting", () => {
         expect(nextMeeting(recurringCourse, new Date("2021-01-04T00:00:00"))).toEqual(recurringStartMon);
         expect(nextMeeting(recurringCourse, new Date("2021-01-04T12:30:01"))).toEqual(recurringStartWed);
         expect(nextMeeting(recurringCourse, new Date("2021-01-06T12:30:01"))).toEqual(recurringStartNextFri);
+
+        expect(() => nextMeeting({section: {days: {type: "INVALID"}}}, new Date())).toThrow();
     });
 });
