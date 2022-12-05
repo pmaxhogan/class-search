@@ -84,6 +84,7 @@ describe("getDaysTimesLocations", () => {
             '10:00am - 1:00pm',
             'No Meeting Room'
         ])).toStrictEqual([]);
+        expect(getDaysTimesLocations(['2022-09-17 Saturday', '10:00am - 11:30am', '2022-10-08 Saturday', '10:00am - 11:30am', '2022-10-29 Saturday', '10:00am - 11:30am', '2022-12-03 Saturday', '10:00am - 11:30am'])).toStrictEqual([]);
     });
 
     test("throws on invalid", () => {

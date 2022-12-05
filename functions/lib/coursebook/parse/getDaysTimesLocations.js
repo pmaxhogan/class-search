@@ -24,7 +24,7 @@ export default function getDaysTimesLocations(scheduleAndLocationParts) {
         return [];
     }
 
-    if (scheduleAndLocationParts.length === 2 && isDays(scheduleAndLocationParts[0]) && isTimes(scheduleAndLocationParts[1])) {
+    if (scheduleAndLocationParts.length % 2 === 0 && isDayThenTimeRepeating(scheduleAndLocationParts)) {
         return [];
     }
 
@@ -60,5 +60,7 @@ export default function getDaysTimesLocations(scheduleAndLocationParts) {
         return results;
     }
 
+    console.log(scheduleAndLocationParts);
+    console.log(original);
     throw new Error("Invalid scheduleAndLocationParts " + scheduleAndLocationParts + " (original) " + original);
 }

@@ -9,8 +9,7 @@ export function tdsToSectionObjects(tds, prefix) {
     const coursePrefixCodeAndSection = load(tds[1]).text().trim().split(" ");
     const courseTitle = load(tds[3]).text().trim().replace(/ \([0-9-]+ (Semester Credit Hours|Credits)\)/, "").replaceAll("  ", " ");
     const courseInstructor = load(tds[4]).text().trim().replaceAll(",\n", ",").replaceAll("\n", "");
-    const scheduleAndLocationParts = tds[5].children.map(x => load(x).text().trim()).join("\n")
-        .split("\n").filter(Boolean).map(x => x.trim());
+    const scheduleAndLocationParts = load(tds[5])("td").find(".clstbl__resultrow__day,.clstbl__resultrow__time,.clstbl__resultrow__location").toArray().map(x => load(x).text().trim()).filter(Boolean);
 
     const isOpen = termAndStatus.endsWith("Open");
     const isStopped = termAndStatus.endsWith("Stopped");
