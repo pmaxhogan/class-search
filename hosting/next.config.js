@@ -1,6 +1,4 @@
-const nextConfig = {
+module.exports = {
     reactStrictMode: true,
     poweredByHeader: false
 };
-
-export default nextConfig;
