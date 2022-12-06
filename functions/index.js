@@ -7,6 +7,8 @@ import e from "express";
 import {nextMeetingsInLocation} from "./lib/findRooms/nextMeetingInLocation.js";
 import {getBuildings} from "./lib/findRooms/getBuildings.js";
 import {getRoomsInBuilding} from "./lib/findRooms/getRooms.js";
+import {coursebookTimeZone} from "./lib/consts.js";
+import {cloneDate} from "./lib/findRooms/nextMeeting.js";
 
 const sections = await getSectionsFromDisk();
 const buildings = await getBuildings();
@@ -23,8 +25,26 @@ app.get("/api/rooms", async (req, res) => {
     res.json(rooms);
 });
 
+
+/**
+ * VERY UGLY HACK
+ * Use an actual time zone library I beg of you
+ * Like actually why
+ * */
+const fixTimeZone = date => {
+    const clone = cloneDate(date);
+    const utcDate = new Date(clone.toLocaleString('en-US', { timeZone: "UTC" }));
+    const tzDate = new Date(clone.toLocaleString('en-US', { timeZone: coursebookTimeZone }));
+    const offset = utcDate.getTime() - tzDate.getTime();
+    date.setTime( date.getTime() + offset );
+};
+
+
 app.get("/api/study/room", async (req, res) => {
     const roomStr = req.query.room;
+    const startDateTime = req.query.start ? new Date(req.query.start) : new Date();
+    if(!roomStr) return res.status(400).send("Missing room");
+    if(!startDateTime) return res.status(400).send("Missing referenceDateTime");
     const split = roomStr.split(" ");
     if (split.length !== 2) return res.status(400).send("Invalid roomStr");
     const [building, room] = split;
@@ -37,9 +57,11 @@ app.get("/api/study/room", async (req, res) => {
     }
     floor = parseInt(floor);
     if(isNaN(floor)) return res.status(400).send("Invalid roomStr");
-    const meetings = await nextMeetingsInLocation({building, room: roomNum, floor: floor});
+    const meetings = await nextMeetingsInLocation({building, room: roomNum, floor: floor}, startDateTime);
     if (!meetings) return res.status(404).send("No classes found in room " + roomStr);
-    console.log(meetings[0]);
+    meetings.forEach(meeting => {
+        fixTimeZone(meeting.nextMeeting);
+    });
     res.json(meetings);
 });
 

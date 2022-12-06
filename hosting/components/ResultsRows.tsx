@@ -2,8 +2,10 @@
 
 import React from "react";
 import useSWR from "swr";
+import ResultRow from "./ResultRow";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
 
 export default function ResultsRows({ roomName }) {
 
@@ -13,5 +15,5 @@ export default function ResultsRows({ roomName }) {
         return <p>Failed to load results :(</p>
     }
 
-    return <>{studyResults?.map(result => (<p>{JSON.stringify(result)}</p>))}</>
+    return <ul>{studyResults?.map(result => (<ResultRow key={result.nextMeeting} result={result}/>))}</ul>
 }

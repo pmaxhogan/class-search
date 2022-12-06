@@ -30,6 +30,7 @@ yargs(hideBin(process.argv))
             if (!meetings) return console.log("No classes found in room " + roomStr);
             if (!all) meetings = meetings.slice(0, 1);
 
+            console.log(meetings);
             meetings.forEach(meeting => {
                 const location = meeting.courseSection.section.location;
                 console.log(`Room: ${location.building} ${location.floor}.${location.room}\tNext Class:  ${meeting.courseSection.course.prefix} ${meeting.courseSection.course.code}: ${meeting.courseSection.course.title}\t@${meeting.nextMeeting?.toLocaleString()}`);

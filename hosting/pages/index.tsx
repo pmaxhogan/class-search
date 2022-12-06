@@ -46,7 +46,7 @@ function IndexPage() {
 
     return (
         <main>
-            <h1>Find Classes In</h1>
+            <h1>Find Study Rooms In</h1>
             <select value={buildingName} onChange={handleBuildingChange}>
                 <option value="">Select a building</option>
                 {buildings.map(building => building.building).sort().map(building => (<option value={building} key={building}>{building}</option>))}
