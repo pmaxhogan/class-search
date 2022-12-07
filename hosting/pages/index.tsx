@@ -9,7 +9,6 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const dedupe = arr => [...new Set(arr)];
 
 function IndexPage() {
-    console.clear();
     const [buildingName, setBuildingName] = useState("");
     const [floor, setFloor] = useState("");
     const [room, setRoom] = useState("");

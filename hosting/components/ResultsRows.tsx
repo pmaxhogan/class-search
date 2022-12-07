@@ -15,5 +15,17 @@ export default function ResultsRows({ roomName }) {
         return <p>Failed to load results :(</p>
     }
 
-    return <ul>{studyResults?.map(result => (<ResultRow key={result.nextMeeting} result={result}/>))}</ul>
+    let previousMeetingTime = null;
+    if(studyResults) {
+        return <ul>{studyResults?.filter(result => {
+            if(previousMeetingTime === result.nextMeeting){
+                console.log("deduping", result);
+                return false;
+            }
+            previousMeetingTime = result.nextMeeting;
+            return true;
+        }).map(result => (<ResultRow key={result.nextMeeting + "_" + result.courseSection.course.title} result={result}/>))}</ul>
+    }else{
+        return <p>Loading...</p>
+    }
 }

@@ -6,6 +6,8 @@
       <excludeFolder url="file://$MODULE_DIR$/.tmp" />
       <excludeFolder url="file://$MODULE_DIR$/tmp" />
       <excludeFolder url="file://$MODULE_DIR$/functions/cache" />
+      <excludeFolder url="file://$MODULE_DIR$/.firebase" />
+      <excludeFolder url="file://$MODULE_DIR$/hosting/out" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
