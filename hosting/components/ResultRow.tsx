@@ -8,7 +8,7 @@ export default function ResultRow({result}) {
     // noinspection TypeScriptValidateJSTypes
     const str = dateTimeObj.toRelativeCalendar() + " at " + dateTimeObj.toLocaleString({hour: "2-digit", minute: "2-digit"});
     const durationUntil = dateTimeObj.diffNow().shiftTo("hours", "minutes").toObject();
-    const durationUntilStr = `${pluralize(durationUntil.hours, "hour")} and ${pluralize(Math.floor(durationUntil.minutes), "minute")}}`;
+    const durationUntilStr = `${pluralize(durationUntil.hours, "hour")} and ${pluralize(Math.floor(durationUntil.minutes), "minute")}`;
 
 
     const {section, course} = result.courseSection;

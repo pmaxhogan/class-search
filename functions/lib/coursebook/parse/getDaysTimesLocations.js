@@ -16,7 +16,10 @@ export default function getDaysTimesLocations(scheduleAndLocationParts) {
         scheduleAndLocationParts.shift();
     }
 
-    while (newHeaders.includes(scheduleAndLocationParts[scheduleAndLocationParts.length - 1])) {
+    if(newHeaders.includes(scheduleAndLocationParts[scheduleAndLocationParts.length - 1]) && scheduleAndLocationParts.length >= 5){
+        console.log("AAAAAAAA", scheduleAndLocationParts);
+    }
+    while (newHeaders.includes(scheduleAndLocationParts[scheduleAndLocationParts.length - 1]) && scheduleAndLocationParts.length < 5) {
         scheduleAndLocationParts.pop();
     }
 
@@ -48,6 +51,9 @@ export default function getDaysTimesLocations(scheduleAndLocationParts) {
         let results = [];
         for (let i = 0; i < scheduleAndLocationParts.length; i += 3) {
             if (isDayThenTimeThenLocation(scheduleAndLocationParts.slice(i))) {
+                if(newHeaders.includes(scheduleAndLocationParts[i + 2])){
+                    continue;
+                }
                 results.push({
                     days: scheduleAndLocationParts[i],
                     times: scheduleAndLocationParts[i + 1],

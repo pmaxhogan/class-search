@@ -4,8 +4,10 @@ import {DAYS_TYPES, LOCATION_TYPES, specialLocations} from "../../consts.js";
 import {isSpecialDays, splitIntoDays} from "./daysTimesParse.js";
 import getDaysTimesLocations from "./getDaysTimesLocations.js";
 
+const defaultTermAndStatus = process.env.COURSE_TERM.split("_")[1] + "Full";
+
 export function tdsToSectionObjects(tds, prefix) {
-    const termAndStatus = load(tds[0]).text().trim();
+    const termAndStatus = load(tds[0]).text().trim() || defaultTermAndStatus;
     const coursePrefixCodeAndSection = load(tds[1]).text().trim().split(" ");
     const courseTitle = load(tds[3]).text().trim().replace(/ \([0-9-]+ (Semester Credit Hours|Credits)\)/, "").replaceAll("  ", " ");
     const courseInstructor = load(tds[4]).text().trim().replaceAll(",\n", ",").replaceAll("\n", "");
@@ -37,7 +39,7 @@ export function tdsToSectionObjects(tds, prefix) {
     for (const daysTimesLocation of daysTimesLocationList) {
         let {days, times, location} = daysTimesLocation;
 
-        if (location.startsWith("SOM")) location = "J" + location;
+        if (location && location.startsWith("SOM")) location = "J" + location;
 
         let locationObject;
         if (location === null) {
