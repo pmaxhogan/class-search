@@ -8,9 +8,7 @@
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log"
   },
-  "engines": {
-    "node": "16"
-  },
+  "engines": {"node": "16"},
   "main": "index.js",
   "type": "module",
   "dependencies": {
@@ -19,7 +17,7 @@
     "express": "^4.18.2",
     "fast-xml-parser": "^4.0.12",
     "firebase-admin": "^11.3.0",
-    "firebase-functions": "^4.1.0",
+    "firebase-functions": "^4.1.1",
     "json-2-csv": "^3.18.0",
     "node-fetch": "^3.3.0",
     "yargs": "^17.6.2"
