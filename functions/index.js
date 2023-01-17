@@ -25,21 +25,6 @@ app.get("/api/rooms", async (req, res) => {
     res.json(rooms);
 });
 
-
-/**
- * VERY UGLY HACK
- * Use an actual time zone library I beg of you
- * Like actually why
- * */
-const fixTimeZone = date => {
-    const clone = cloneDate(date);
-    const utcDate = new Date(clone.toLocaleString('en-US', { timeZone: "UTC" }));
-    const tzDate = new Date(clone.toLocaleString('en-US', { timeZone: coursebookTimeZone }));
-    const offset = utcDate.getTime() - tzDate.getTime();
-    date.setTime( date.getTime() + offset );
-};
-
-
 app.get("/api/study/room", async (req, res) => {
     const roomStr = req.query.room;
     const startDateTime = req.query.start ? new Date(req.query.start) : new Date();
@@ -57,11 +42,11 @@ app.get("/api/study/room", async (req, res) => {
     }
     floor = parseInt(floor);
     if(isNaN(floor)) return res.status(400).send("Invalid roomStr");
-    const meetings = await nextMeetingsInLocation({building, room: roomNum, floor: floor}, startDateTime);
+
+    const endToleranceMs = 1000 * 60 * 15;
+
+    const meetings = await nextMeetingsInLocation({building, room: roomNum, floor: floor}, startDateTime, endToleranceMs);
     if (!meetings) return res.status(404).send("No classes found in room " + roomStr);
-    meetings.forEach(meeting => {
-        fixTimeZone(meeting.nextMeeting);
-    });
     res.json(meetings);
 });
 

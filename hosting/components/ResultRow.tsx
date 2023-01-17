@@ -12,5 +12,5 @@ export default function ResultRow({result}) {
 
 
     const {section, course} = result.courseSection;
-    return ( <li>Next class: {str} ({durationUntilStr} from now), {section.time.start} - {section.time.end}</li> );
+    return ( <li>Next class: {str} ({durationUntilStr} from now), {(new Date(result.nextMeeting)).toString()} {section.time.start} - {section.time.end}: {course.prefix} {course.code}.{section.number}</li> );
 }

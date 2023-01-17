@@ -7,9 +7,9 @@ import ResultRow from "./ResultRow";
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 
-export default function ResultsRows({ roomName }) {
+export default function ResultsRows({ roomName, startDate }) {
 
-    const {data: studyResults, error: resultsError} = useSWR(`/api/study/room?room=${encodeURIComponent(roomName)}`, fetcher);
+    const {data: studyResults, error: resultsError} = useSWR(`/api/study/room?room=${encodeURIComponent(roomName)}` + (startDate ? `&start=${startDate}` : ""), fetcher);
 
     if(resultsError){
         return <p>Failed to load results :(</p>

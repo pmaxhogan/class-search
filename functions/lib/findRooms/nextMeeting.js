@@ -1,4 +1,4 @@
-import {DAYS_TYPES, daysOfWeek} from "../consts.js";
+import {coursebookTimeZone, DAYS_TYPES, daysOfWeek} from "../consts.js";
 
 export const cloneDate = date => new Date(date.getTime());
 
@@ -42,6 +42,19 @@ export const nextDay = (weekDay, referenceDateTime) => {
     return referenceDateTime;
 };
 
+/**
+ * VERY UGLY HACK
+ * Use an actual time zone library I beg of you
+ * Like actually why
+ * */
+const fixTimeZone = date => {
+    const clone = cloneDate(date);
+    const utcDate = new Date(clone.toLocaleString('en-US', { timeZone: "UTC" }));
+    const tzDate = new Date(clone.toLocaleString('en-US', { timeZone: coursebookTimeZone }));
+    const offset = utcDate.getTime() - tzDate.getTime();
+    date.setTime( date.getTime() + offset );
+};
+
 export const relativeDayTimeToDate = (weekDay, time, referenceDateTime) => {
     referenceDateTime = cloneDate(referenceDateTime);
     const date = nextDay(weekDay, referenceDateTime);
@@ -50,6 +63,7 @@ export const relativeDayTimeToDate = (weekDay, time, referenceDateTime) => {
     date.setMinutes(minutes);
     date.setSeconds(0);
     date.setMilliseconds(0);
+    fixTimeZone(date);
     return date;
 };
 

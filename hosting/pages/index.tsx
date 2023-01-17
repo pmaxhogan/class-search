@@ -12,6 +12,13 @@ function IndexPage() {
     const [buildingName, setBuildingName] = useState("");
     const [floor, setFloor] = useState("");
     const [room, setRoom] = useState("");
+    const [isDateLater, setIsDateLater] = useState(false);
+    const [laterDate, setLaterDate] = useState(null);
+
+    // @ts-ignore
+    const dateIsValid = !isNaN(new Date(laterDate));
+
+    const dateClass = dateIsValid ? "" : "invalid";
 
     function handleBuildingChange(e) {
         setBuildingName(e.target.value);
@@ -32,12 +39,12 @@ function IndexPage() {
     }
 
     function isValid(){
-        return buildingName && floor && room && getFloorsFromBuilding(buildingName).includes(parseInt(floor)) && getRoomsFromBuildingFloor(buildingName, floor).includes(room);
+        return dateIsValid && buildingName && floor && room && getFloorsFromBuilding(buildingName).includes(parseInt(floor)) && getRoomsFromBuildingFloor(buildingName, floor).includes(room);
     }
 
-    function getFullRoomName(){
-        return `${buildingName} ${floor}.${room}`;
-    }
+    const fullRoomName =`${buildingName} ${floor}.${room}`;
+
+    const laterDateIso = laterDate ? new Date(laterDate).toISOString() : null;
 
     const {data: buildings, error: roomsError} = useSWR(`/api/rooms`, fetcher);
     if (roomsError) return <main>Failed to load</main>
@@ -59,12 +66,21 @@ function IndexPage() {
                 {getRoomsFromBuildingFloor(buildingName, floor).map(room => (<option value={room} key={room}>{room}</option>))}
             </select>}
 
-            {isValid() && (<>
-                <p>{getFullRoomName()}</p>
+            <br/>
+            <button onClick={() => setIsDateLater(false)} disabled={!isDateLater}>Study Now</button>
+            <button onClick={() => setIsDateLater(true)} disabled={isDateLater}>Study Later</button>
+            {isDateLater && <>
+                <h2>Study At</h2>
+                <input type="datetime-local" value={laterDate} className={dateClass} onChange={e => setLaterDate(e.target.value)}/>
+            </>}
+
+            {isValid() ? (<>
+                <p>{fullRoomName}</p>
                 <FloorMapOfRoom buildingName={buildingName} floor={floor} room={room}/>
                 <p>Results</p>
-                <ResultsRows roomName = {getFullRoomName()}/>
-            </>)}
+                <ResultsRows roomName = {fullRoomName} startDate={laterDateIso}/>
+            </>) : (dateIsValid ? <p>Invalid room</p> : <p>Invalid date</p>)
+            }
         </main>
     )
 }

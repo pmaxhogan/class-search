@@ -6,12 +6,12 @@ export async function findSectionsInLocation({building, room, floor}) {
     return (await getSectionsFromDisk()).filter(courseSection => courseSection.section.location.room === room && courseSection.section.location.floor === floor && courseSection.section.location.building === building);
 }
 
-export async function nextMeetingsInLocation({building, room, floor}, referenceDateTime = null) {
+export async function nextMeetingsInLocation({building, room, floor}, referenceDateTime = null, endToleranceMs = 0) {
     if (!referenceDateTime) referenceDateTime = new Date();
 
     const sections = await findSectionsInLocation({building, room, floor});
     const courseSectionsHere = sections.map(courseSection => ({
-        nextMeeting: nextMeeting(courseSection, referenceDateTime),
+        nextMeeting: nextMeeting(courseSection, referenceDateTime, endToleranceMs),
         courseSection
     })).filter(meeting => meeting.nextMeeting);
     return sortNextMeetings(courseSectionsHere);
