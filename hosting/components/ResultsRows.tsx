@@ -4,6 +4,7 @@ import React from "react";
 import useSWR from "swr";
 import ResultRow from "./ResultRow";
 
+
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 
@@ -17,14 +18,17 @@ export default function ResultsRows({ roomName, startDate }) {
 
     let previousMeetingTime = null;
     if(studyResults) {
-        return <ul>{studyResults?.filter(result => {
+        const dedupedResults = studyResults?.filter(result => {
+            result.key = result.nextMeeting + "_" + result.courseSection.course.title;
             if(previousMeetingTime === result.nextMeeting){
                 console.log("deduping", result);
                 return false;
             }
             previousMeetingTime = result.nextMeeting;
             return true;
-        }).map(result => (<ResultRow key={result.nextMeeting + "_" + result.courseSection.course.title} result={result}/>))}</ul>
+        });
+
+        return <div>{dedupedResults.map(result => (<ResultRow key={result.key} result={result}/>))}</div>
     }else{
         return <p>Loading...</p>
     }
