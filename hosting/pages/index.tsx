@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react'
 import useSWR from "swr";
 import FloorMapOfRoom from "../components/FloorMapOfRoom";
 import ResultsRows from "../components/ResultsRows";
+import Disclaimer from "../components/Disclaimer";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -52,6 +53,8 @@ function IndexPage() {
 
     return (
         <main>
+            <Disclaimer/>
+
             <h1>Find Study Rooms In</h1>
             <select value={buildingName} onChange={handleBuildingChange}>
                 <option value="">Select a building</option>
