@@ -8,7 +8,7 @@ import {nextMeetingsInLocation} from "./lib/findRooms/nextMeetingInLocation.js";
 import {getBuildings} from "./lib/findRooms/getBuildings.js";
 import {getRoomsInBuilding} from "./lib/findRooms/getRooms.js";
 import {coursebookTimeZone} from "./lib/consts.js";
-import {cloneDate} from "./lib/findRooms/nextMeeting.js";
+import {cloneDate} from "./lib/findRooms/nextMeetings.js";
 
 const sections = await getSectionsFromDisk();
 const buildings = await getBuildings();

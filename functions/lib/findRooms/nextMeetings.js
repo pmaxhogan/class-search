@@ -93,21 +93,20 @@ export const getOccurrences = (section, referenceDateTime) => {
     return sortDatePairs(occurrences);
 };
 
-export const nextMeeting = (row, referenceDateTime, endToleranceMs) => {
+export const nextMeetings = (row, referenceDateTime, endToleranceMs) => {
     if (!referenceDateTime) referenceDateTime = new Date();
     else referenceDateTime = cloneDate(referenceDateTime);
     const {section} = row;
 
     switch (section.days.type) {
         case DAYS_TYPES.NONE:
-            return null;
+            return [null];
         case DAYS_TYPES.ONCE:
-            const nextOnce = nextMeetingOfOccurrence(absoluteDayTimeToDate(section.days.when, section.time.start), absoluteDayTimeToDate(section.days.when, section.time.end), referenceDateTime, endToleranceMs);
-            return nextOnce;
+            return [nextMeetingOfOccurrence(absoluteDayTimeToDate(section.days.when, section.time.start), absoluteDayTimeToDate(section.days.when, section.time.end), referenceDateTime, endToleranceMs)];
         case DAYS_TYPES.RECURRING:
             const occurrences = getOccurrences(section, referenceDateTime);
             const nextMeetingsFromOccurences = occurrences.map(occurrence => nextMeetingOfOccurrence(occurrence.start, occurrence.end, referenceDateTime, endToleranceMs));
-            return sortDatePairs(nextMeetingsFromOccurences.filter(Boolean))[0];
+            return sortDatePairs(nextMeetingsFromOccurences.filter(Boolean));
         default:
             throw new Error("Invalid days type " + section.days.type);
     }

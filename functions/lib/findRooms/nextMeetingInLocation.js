@@ -1,4 +1,4 @@
-import {nextMeeting} from "./nextMeeting.js";
+import {nextMeetings} from "./nextMeetings.js";
 import {getRoomsInBuilding} from "./getRooms.js";
 import {getSectionsFromDisk} from "../coursebook/getSections.js";
 
@@ -10,10 +10,18 @@ export async function nextMeetingsInLocation({building, room, floor}, referenceD
     if (!referenceDateTime) referenceDateTime = new Date();
 
     const sections = await findSectionsInLocation({building, room, floor});
-    const courseSectionsHere = sections.map(courseSection => ({
-        nextMeeting: nextMeeting(courseSection, referenceDateTime, endToleranceMs),
-        courseSection
-    })).filter(meeting => meeting.nextMeeting);
+    const courseSectionsHere = sections.map(courseSection => {
+        const next = nextMeetings(courseSection, referenceDateTime, endToleranceMs);
+
+        const results = [];
+        for(const meeting of next) {
+            results.push({
+                nextMeeting: meeting,
+                courseSection
+            });
+        }
+        return results;
+    }).flat().filter(meeting => meeting.nextMeeting);
     return sortNextMeetings(courseSectionsHere);
 }
 
