@@ -35,6 +35,7 @@ export default function Disclaimer() {
                     <ul>
                         <li>Data is provided on a best-effort from CourseBook, and may be <b>out of date or wrong</b></li>
                         <li>A room may appear available but be in use by a class, professor, TA, staff, etc.</li>
+                        <li>A room may not be open to the public even if it is not in use</li>
                         <li>Please be respectful to others and be <b>quiet</b> if others are nearby</li>
                     </ul>
                 </Typography>

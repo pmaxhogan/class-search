@@ -7,6 +7,13 @@ import Typography from "@mui/material/Typography";
 import CardContent from "@mui/material/CardContent";
 import Card from '@mui/material/Card';
 import Paper from "@mui/material/Paper";
+import {green} from '@mui/material/colors';
+import {Grid} from "@mui/material";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import IconLabeledText from "./IconLabeledText";
+import ScheduleIcon from "@mui/icons-material/Schedule";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
 
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -70,7 +77,8 @@ export default function ResultsRows({roomName, startDate}) {
                 const isWithinAWeek = nextMeetingDate.getTime() - new Date().getTime() < 1000 * 60 * 60 * 24 * 7;
                 const date = isWithinAWeek ? dayOfWeek : nextMeetingDate.toLocaleDateString("en-US", {
                     month: "long",
-                    day: "numeric"
+                    day: "numeric",
+                    year: "numeric"
                 });
                 split.push({date: dateString, results: [], friendlyDate: date});
             } else {
@@ -94,31 +102,32 @@ export default function ResultsRows({roomName, startDate}) {
 
             split[split.length - 1].results.push({result});
         }
-        console.log("split", split);
 
-        return <div>{split.map(({date, friendlyDate, results}) => <div key={friendlyDate}>
-            <Typography component="h2" variant="h4" sx={{textAlign: "center", marginTop: "1rem", marginBottom: "1rem"}}>
-                {friendlyDate}
-            </Typography>
-            {results.map(item => {
-                if (item.gap) {
-                    return (<Paper sx={{ minWidth: 275 }} elevation={3}>
-                            <Typography component="h2" variant="overline"
-                                        sx={{textAlign: "center", marginTop: "1rem", marginBottom: "1rem"}}
-                                        key={item.key}>
 
-                                {Math.round(item.gap / 1000 / 60)} minute gap{item.isInitial ? " from now" : ""}
-                            </Typography>
-                    </Paper>);
-                }else{
-            return (<ResultRow key={item.result.key} results={getAllCrosslisted(studyResults, item.result)}/>);
-        }
-            })}
-        </div>
-    )
-    }</div>
-    }else
-        {
-            return <p>Loading...</p>
-        }
+        return <div>{
+            split.map(({ friendlyDate, results}) => <div key={friendlyDate}>
+                <Typography component="h2" variant="h4" sx={{textAlign: "center", marginTop: "1rem", marginBottom: "1rem"}}>
+                    {friendlyDate}
+                </Typography>
+                {results.map(item => {
+                    const minutes = Math.round(item.gap / 1000 / 60);
+                    const gap = minutes > 60 ? (Math.floor(minutes / 60) + " hour" + (minutes % 60 > 0 ? " " + (minutes % 60) + " minute" : "")) : minutes + " minute";
+                    if (item.gap) {
+                        return (
+                            <Accordion sx={{backgroundColor: green[300]}} defaultExpanded>
+                                <AccordionSummary>
+                                    <IconLabeledText icon={<ScheduleIcon/>}
+                                                     label={gap + " gap " + (item.isInitial ? " from now" : "")}/>
+                                </AccordionSummary>
+                            </Accordion>
+                        );
+                    } else {
+                        return (<ResultRow key={item.result.key} results={getAllCrosslisted(studyResults, item.result)}/>);
+                    }
+                })}
+            </div>
+        )}</div>
+    } else {
+        return <p>Loading...</p>
     }
+}
