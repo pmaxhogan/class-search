@@ -72,11 +72,11 @@ describe("nextMeeting", () => {
     });
 
     test("relativeDayTimeToDate", () => {
-        expect(relativeDayTimeToDate("Friday", "1:00pm", new Date("2021-01-01T00:00:00"))).toEqual(new Date("2021-01-01T13:00:00"));
-        expect(relativeDayTimeToDate("Friday", "1:00am", new Date("2021-01-01T00:00:00"))).toEqual(new Date("2021-01-01T01:00:00"));
-        expect(relativeDayTimeToDate("Friday", "2:23pm", new Date("2021-01-01T00:00:00"))).toEqual(new Date("2021-01-01T14:23:00"));
-        expect(relativeDayTimeToDate("Friday", "2:23am", new Date("2021-01-01T00:00:00"))).toEqual(new Date("2021-01-01T02:23:00"));
-        expect(relativeDayTimeToDate("Friday", "11:00am", new Date("2021-01-01T13:00:00"))).toEqual(new Date("2021-01-01T11:00:00"));
+        expect(relativeDayTimeToDate("Friday", "1:00pm", new Date("2021-01-01T00:00:00"))).toEqual(new Date("2021-01-02T01:00:00.000Z"));
+        expect(relativeDayTimeToDate("Friday", "1:00am", new Date("2021-01-01T00:00:00"))).toEqual(new Date("2021-01-01T13:00:00.000Z"));
+        expect(relativeDayTimeToDate("Friday", "2:23pm", new Date("2021-01-01T00:00:00"))).toEqual(new Date("2021-01-02T02:23:00.000Z"));
+        expect(relativeDayTimeToDate("Friday", "2:23am", new Date("2021-01-01T00:00:00"))).toEqual(new Date("2021-01-01T14:23:00.000Z"));
+        expect(relativeDayTimeToDate("Friday", "11:00am", new Date("2021-01-01T13:00:00"))).toEqual(new Date("2021-01-01T23:00:00.000Z"));
     });
 
     test("sortDatePairs", () => {
@@ -89,21 +89,21 @@ describe("nextMeeting", () => {
         const section = {days: {when: ["Monday", "Wednesday"]}, time: {start: "1:00pm", end: "2:15pm"}};
 
         // once a week, returns next Monday & the following Monday
-        expect(getOccurrences({days: {when: ["Monday"]}, time: {start: "1:00pm", end: "2:15pm"}}, new Date("2021-01-01T00:00:00"))).toEqual([{start: new Date("2021-01-04T13:00:00"), end: new Date("2021-01-04T14:15:00")}, {start: new Date("2021-01-11T13:00:00"), end: new Date("2021-01-11T14:15:00")}]);
+        expect(getOccurrences({days: {when: ["Monday"]}, time: {start: "1:00pm", end: "2:15pm"}}, new Date("2021-01-01T00:00:00"))).toEqual([{start: new Date("2021-01-05T01:00:00.000Z"), end: new Date("2021-01-05T02:15:00.000Z")}, {start: new Date("2021-01-12T01:00:00.000Z"), end: new Date("2021-01-12T02:15:00.000Z")}]);
         // monday & wednesday, returns next Monday & Wednesday & the following Monday & Wednesday
-        expect(getOccurrences(section, new Date("2021-01-01T00:00:00"))).toEqual([{start: new Date("2021-01-04T13:00:00"), end: new Date("2021-01-04T14:15:00")}, {start: new Date("2021-01-06T13:00:00"), end: new Date("2021-01-06T14:15:00")}, {start: new Date("2021-01-11T13:00:00"), end: new Date("2021-01-11T14:15:00")}, {start: new Date("2021-01-13T13:00:00"), end: new Date("2021-01-13T14:15:00")}]);
+        expect(getOccurrences(section, new Date("2021-01-01T00:00:00"))).toEqual([{start: new Date("2021-01-05T01:00:00.000Z"), end: new Date("2021-01-05T02:15:00.000Z")}, {start: new Date("2021-01-07T01:00:00.000Z"), end: new Date("2021-01-07T02:15:00.000Z")}, {start: new Date("2021-01-12T01:00:00.000Z"), end: new Date("2021-01-12T02:15:00.000Z")}, {start: new Date("2021-01-14T01:00:00.000Z"), end: new Date("2021-01-14T02:15:00.000Z")}]);
         // same as above but we're calling on monday morning so we should get the same results
-        expect(getOccurrences(section, new Date("2021-01-04T00:00:00"))).toEqual([{start: new Date("2021-01-04T13:00:00"), end: new Date("2021-01-04T14:15:00")}, {start: new Date("2021-01-06T13:00:00"), end: new Date("2021-01-06T14:15:00")}, {start: new Date("2021-01-11T13:00:00"), end: new Date("2021-01-11T14:15:00")}, {start: new Date("2021-01-13T13:00:00"), end: new Date("2021-01-13T14:15:00")}]);
+        expect(getOccurrences(section, new Date("2021-01-04T00:00:00"))).toEqual([{start: new Date("2021-01-05T01:00:00.000Z"), end: new Date("2021-01-05T02:15:00.000Z")}, {start: new Date("2021-01-07T01:00:00.000Z"), end: new Date("2021-01-07T02:15:00.000Z")}, {start: new Date("2021-01-12T01:00:00.000Z"), end: new Date("2021-01-12T02:15:00.000Z")}, {start: new Date("2021-01-14T01:00:00.000Z"), end: new Date("2021-01-14T02:15:00.000Z")}]);
         // same as above but we're calling on monday evening so we should get the same results
-        expect(getOccurrences(section, new Date("2021-01-04T23:00:00"))).toEqual([{start: new Date("2021-01-04T13:00:00"), end: new Date("2021-01-04T14:15:00")}, {start: new Date("2021-01-06T13:00:00"), end: new Date("2021-01-06T14:15:00")}, {start: new Date("2021-01-11T13:00:00"), end: new Date("2021-01-11T14:15:00")}, {start: new Date("2021-01-13T13:00:00"), end: new Date("2021-01-13T14:15:00")}]);
+        expect(getOccurrences(section, new Date("2021-01-04T23:00:00"))).toEqual([{start: new Date("2021-01-05T01:00:00.000Z"), end: new Date("2021-01-05T02:15:00.000Z")}, {start: new Date("2021-01-07T01:00:00.000Z"), end: new Date("2021-01-07T02:15:00.000Z")}, {start: new Date("2021-01-12T01:00:00.000Z"), end: new Date("2021-01-12T02:15:00.000Z")}, {start: new Date("2021-01-14T01:00:00.000Z"), end: new Date("2021-01-14T02:15:00.000Z")}]);
         // same as above but we're calling on tuesday morning so we should get the same results
-        expect(getOccurrences(section, new Date("2021-01-05T00:00:00"))).toEqual([{start: new Date("2021-01-06T13:00:00"), end: new Date("2021-01-06T14:15:00")}, {start: new Date("2021-01-11T13:00:00"), end: new Date("2021-01-11T14:15:00")}, {start: new Date("2021-01-13T13:00:00"), end: new Date("2021-01-13T14:15:00")}, {start: new Date("2021-01-18T13:00:00"), end: new Date("2021-01-18T14:15:00")}]);
+        expect(getOccurrences(section, new Date("2021-01-05T00:00:00"))).toEqual([{start: new Date("2021-01-07T01:00:00.000Z"), end: new Date("2021-01-07T02:15:00.000Z")}, {start: new Date("2021-01-12T01:00:00.000Z"), end: new Date("2021-01-12T02:15:00.000Z")}, {start: new Date("2021-01-14T01:00:00.000Z"), end: new Date("2021-01-14T02:15:00.000Z")}, {start: new Date("2021-01-19T01:00:00.000Z"), end: new Date("2021-01-19T02:15:00.000Z")}]);
         // same as above but we're calling on wednesday morning so we should get different results
-        expect(getOccurrences(section, new Date("2021-01-06T00:00:00"))).toEqual([{start: new Date("2021-01-06T13:00:00"), end: new Date("2021-01-06T14:15:00")}, {start: new Date("2021-01-11T13:00:00"), end: new Date("2021-01-11T14:15:00")}, {start: new Date("2021-01-13T13:00:00"), end: new Date("2021-01-13T14:15:00")}, {start: new Date("2021-01-18T13:00:00"), end: new Date("2021-01-18T14:15:00")}]);
+        expect(getOccurrences(section, new Date("2021-01-06T00:00:00"))).toEqual([{start: new Date("2021-01-07T01:00:00.000Z"), end: new Date("2021-01-07T02:15:00.000Z")}, {start: new Date("2021-01-12T01:00:00.000Z"), end: new Date("2021-01-12T02:15:00.000Z")}, {start: new Date("2021-01-14T01:00:00.000Z"), end: new Date("2021-01-14T02:15:00.000Z")}, {start: new Date("2021-01-19T01:00:00.000Z"), end: new Date("2021-01-19T02:15:00.000Z")}]);
         // same as above but we're calling on wednesday during class so we should get the same results
-        expect(getOccurrences(section, new Date("2021-01-06T13:30:00"))).toEqual([{start: new Date("2021-01-06T13:00:00"), end: new Date("2021-01-06T14:15:00")}, {start: new Date("2021-01-11T13:00:00"), end: new Date("2021-01-11T14:15:00")}, {start: new Date("2021-01-13T13:00:00"), end: new Date("2021-01-13T14:15:00")}, {start: new Date("2021-01-18T13:00:00"), end: new Date("2021-01-18T14:15:00")}]);
+        expect(getOccurrences(section, new Date("2021-01-06T13:30:00"))).toEqual([{start: new Date("2021-01-07T01:00:00.000Z"), end: new Date("2021-01-07T02:15:00.000Z")}, {start: new Date("2021-01-12T01:00:00.000Z"), end: new Date("2021-01-12T02:15:00.000Z")}, {start: new Date("2021-01-14T01:00:00.000Z"), end: new Date("2021-01-14T02:15:00.000Z")}, {start: new Date("2021-01-19T01:00:00.000Z"), end: new Date("2021-01-19T02:15:00.000Z")}]);
         // same as above but we're calling on wednesday evening so we should get the same results
-        expect(getOccurrences(section, new Date("2021-01-06T23:00:00"))).toEqual([{start: new Date("2021-01-06T13:00:00"), end: new Date("2021-01-06T14:15:00")}, {start: new Date("2021-01-11T13:00:00"), end: new Date("2021-01-11T14:15:00")}, {start: new Date("2021-01-13T13:00:00"), end: new Date("2021-01-13T14:15:00")}, {start: new Date("2021-01-18T13:00:00"), end: new Date("2021-01-18T14:15:00")}]);
+        expect(getOccurrences(section, new Date("2021-01-06T23:00:00"))).toEqual([{start: new Date("2021-01-07T01:00:00.000Z"), end: new Date("2021-01-07T02:15:00.000Z")}, {start: new Date("2021-01-12T01:00:00.000Z"), end: new Date("2021-01-12T02:15:00.000Z")}, {start: new Date("2021-01-14T01:00:00.000Z"), end: new Date("2021-01-14T02:15:00.000Z")}, {start: new Date("2021-01-19T01:00:00.000Z"), end: new Date("2021-01-19T02:15:00.000Z")}]);
     });
 
     test("nextMeeting", () => {
@@ -127,24 +127,24 @@ describe("nextMeeting", () => {
         expect(nextMeeting(oneOffCourse, new Date("2021-01-01T14:30:01"), tolerance)).toEqual(null);
 
         const recurringCourse = {section: {days: {type: DAYS_TYPES.RECURRING, when: ["Monday", "Wednesday", "Friday"]}, time: {start: "11:00am", end: "12:15pm"}}};
-        const recurringStartFri = new Date("2021-01-01T11:00:00");
-        const recurringStartMon = new Date("2021-01-04T11:00:00");
-        const recurringStartWed = new Date("2021-01-06T11:00:00");
-        const recurringStartNextFri = new Date("2021-01-08T11:00:00");
+        const recurringStartFri = new Date("2021-01-01T17:00:00");
+        const recurringStartMon = new Date("2021-01-04T17:00:00");
+        const recurringStartWed = new Date("2021-01-06T17:00:00");
+        const recurringStartNextFri = new Date("2021-01-08T17:00:00");
         // recurring later today
         expect(nextMeeting(recurringCourse, new Date("2021-01-01T00:00:00"))).toEqual(recurringStartFri);
         // recurring right now
         expect(nextMeeting(recurringCourse, new Date("2021-01-01T11:00:00"))).toEqual(recurringStartFri);
         expect(nextMeeting(recurringCourse, new Date("2021-01-01T11:15:00"))).toEqual(recurringStartFri);
         // recurring earlier today
-        expect(nextMeeting(recurringCourse, new Date("2021-01-01T12:15:01"))).toEqual(recurringStartMon);
+        expect(nextMeeting(recurringCourse, new Date("2021-01-01T18:15:01"))).toEqual(recurringStartMon);
         // recurring with tolerance
-        expect(nextMeeting(recurringCourse, new Date("2021-01-01T12:30:00"), tolerance)).toEqual(recurringStartFri);
-        expect(nextMeeting(recurringCourse, new Date("2021-01-01T12:30:01"), tolerance)).toEqual(recurringStartMon);
+        expect(nextMeeting(recurringCourse, new Date("2021-01-01T18:30:00"), tolerance)).toEqual(recurringStartFri);
+        expect(nextMeeting(recurringCourse, new Date("2021-01-01T18:30:01"), tolerance)).toEqual(recurringStartMon);
         // recurring later this week
         expect(nextMeeting(recurringCourse, new Date("2021-01-04T00:00:00"))).toEqual(recurringStartMon);
-        expect(nextMeeting(recurringCourse, new Date("2021-01-04T12:30:01"))).toEqual(recurringStartWed);
-        expect(nextMeeting(recurringCourse, new Date("2021-01-06T12:30:01"))).toEqual(recurringStartNextFri);
+        expect(nextMeeting(recurringCourse, new Date("2021-01-04T18:30:01"))).toEqual(recurringStartWed);
+        expect(nextMeeting(recurringCourse, new Date("2021-01-06T18:30:01"))).toEqual(recurringStartNextFri);
 
         expect(() => nextMeeting({section: {days: {type: "INVALID"}}}, new Date())).toThrow();
     });
