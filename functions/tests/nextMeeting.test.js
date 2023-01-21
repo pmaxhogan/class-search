@@ -1,10 +1,10 @@
 import {describe, expect, test} from "@jest/globals";
 import {
     absoluteDayTimeToDate, getOccurrences,
-    nextDay, nextMeeting,
+    nextDay, nextMeetings,
     nextMeetingOfOccurrence, relativeDayTimeToDate, sortDatePairs,
     timeToComponents
-} from "../lib/findRooms/nextMeeting.js";
+} from "../lib/findRooms/nextMeetings.js";
 import {DAYS_TYPES} from "../lib/consts.js";
 
 describe("nextMeeting", () => {
@@ -108,23 +108,23 @@ describe("nextMeeting", () => {
 
     test("nextMeeting", () => {
         const noMeetingCourse = {section: {days: {type: DAYS_TYPES.NONE}}};
-        expect(nextMeeting(noMeetingCourse)).toBeNull();
-        expect(nextMeeting({section: {days: {type: DAYS_TYPES.NONE}}}, new Date("2021-01-01T00:00:00"))).toBeNull();
+        expect(nextMeetings(noMeetingCourse)[0]).toBeNull();
+        expect(nextMeetings({section: {days: {type: DAYS_TYPES.NONE}}}, new Date("2021-01-01T00:00:00"))[0]).toBeNull();
 
         const oneOffCourse = {section: {days: {type: DAYS_TYPES.ONCE, when: "2021-01-01"}, time: {start: "1:00pm", end: "2:15pm"}}};
         const oneOffStart = new Date("2021-01-01T13:00:00");
         // nothing for a one-off in the past
-        expect(nextMeeting(oneOffCourse)).toBeNull();
+        expect(nextMeetings(oneOffCourse)[0]).toBeNull();
         // one-off later today
-        expect(nextMeeting(oneOffCourse, new Date("2021-01-01T00:00:00"))).toEqual(oneOffStart);
+        expect(nextMeetings(oneOffCourse, new Date("2021-01-01T00:00:00"))[0]).toEqual(oneOffStart);
         // one-off right now
-        expect(nextMeeting(oneOffCourse, new Date("2021-01-01T13:00:00"))).toEqual(oneOffStart);
-        expect(nextMeeting(oneOffCourse, new Date("2021-01-01T13:15:00"))).toEqual(oneOffStart);
+        expect(nextMeetings(oneOffCourse, new Date("2021-01-01T13:00:00"))[0]).toEqual(oneOffStart);
+        expect(nextMeetings(oneOffCourse, new Date("2021-01-01T13:15:00"))[0]).toEqual(oneOffStart);
         // one-off earlier today
-        expect(nextMeeting(oneOffCourse, new Date("2021-01-01T14:15:01"))).toBeNull();
+        expect(nextMeetings(oneOffCourse, new Date("2021-01-01T14:15:01"))[0]).toBeNull();
         // one-off with tolerance
-        expect(nextMeeting(oneOffCourse, new Date("2021-01-01T14:30:00"), tolerance)).toEqual(oneOffStart);
-        expect(nextMeeting(oneOffCourse, new Date("2021-01-01T14:30:01"), tolerance)).toEqual(null);
+        expect(nextMeetings(oneOffCourse, new Date("2021-01-01T14:30:00"), tolerance)[0]).toEqual(oneOffStart);
+        expect(nextMeetings(oneOffCourse, new Date("2021-01-01T14:30:01"), tolerance)[0]).toEqual(null);
 
         const recurringCourse = {section: {days: {type: DAYS_TYPES.RECURRING, when: ["Monday", "Wednesday", "Friday"]}, time: {start: "11:00am", end: "12:15pm"}}};
         const recurringStartFri = new Date("2021-01-01T17:00:00");
@@ -132,20 +132,20 @@ describe("nextMeeting", () => {
         const recurringStartWed = new Date("2021-01-06T17:00:00");
         const recurringStartNextFri = new Date("2021-01-08T17:00:00");
         // recurring later today
-        expect(nextMeeting(recurringCourse, new Date("2021-01-01T00:00:00"))).toEqual(recurringStartFri);
+        expect(nextMeetings(recurringCourse, new Date("2021-01-01T00:00:00"))[0]).toEqual(recurringStartFri);
         // recurring right now
-        expect(nextMeeting(recurringCourse, new Date("2021-01-01T11:00:00"))).toEqual(recurringStartFri);
-        expect(nextMeeting(recurringCourse, new Date("2021-01-01T11:15:00"))).toEqual(recurringStartFri);
+        expect(nextMeetings(recurringCourse, new Date("2021-01-01T11:00:00"))[0]).toEqual(recurringStartFri);
+        expect(nextMeetings(recurringCourse, new Date("2021-01-01T11:15:00"))[0]).toEqual(recurringStartFri);
         // recurring earlier today
-        expect(nextMeeting(recurringCourse, new Date("2021-01-01T18:15:01"))).toEqual(recurringStartMon);
+        expect(nextMeetings(recurringCourse, new Date("2021-01-01T18:15:01"))[0]).toEqual(recurringStartMon);
         // recurring with tolerance
-        expect(nextMeeting(recurringCourse, new Date("2021-01-01T18:30:00"), tolerance)).toEqual(recurringStartFri);
-        expect(nextMeeting(recurringCourse, new Date("2021-01-01T18:30:01"), tolerance)).toEqual(recurringStartMon);
+        expect(nextMeetings(recurringCourse, new Date("2021-01-01T18:30:00"), tolerance)[0]).toEqual(recurringStartFri);
+        expect(nextMeetings(recurringCourse, new Date("2021-01-01T18:30:01"), tolerance)[0]).toEqual(recurringStartMon);
         // recurring later this week
-        expect(nextMeeting(recurringCourse, new Date("2021-01-04T00:00:00"))).toEqual(recurringStartMon);
-        expect(nextMeeting(recurringCourse, new Date("2021-01-04T18:30:01"))).toEqual(recurringStartWed);
-        expect(nextMeeting(recurringCourse, new Date("2021-01-06T18:30:01"))).toEqual(recurringStartNextFri);
+        expect(nextMeetings(recurringCourse, new Date("2021-01-04T00:00:00"))[0]).toEqual(recurringStartMon);
+        expect(nextMeetings(recurringCourse, new Date("2021-01-04T18:30:01"))[0]).toEqual(recurringStartWed);
+        expect(nextMeetings(recurringCourse, new Date("2021-01-06T18:30:01"))[0]).toEqual(recurringStartNextFri);
 
-        expect(() => nextMeeting({section: {days: {type: "INVALID"}}}, new Date())).toThrow();
+        expect(() => nextMeetings({section: {days: {type: "INVALID"}}}, new Date())[0]).toThrow();
     });
 });
