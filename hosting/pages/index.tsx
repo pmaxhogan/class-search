@@ -80,7 +80,6 @@ function IndexPage() {
             {isValid() ? (<>
                 <p>{fullRoomName}</p>
                 <FloorMapOfRoom buildingName={buildingName} floor={floor} room={room}/>
-                <p>Results</p>
                 <ResultsRows roomName = {fullRoomName} startDate={laterDateIso}/>
             </>) : (dateIsValid ? <p>Invalid room</p> : <p>Invalid date</p>)
             }
