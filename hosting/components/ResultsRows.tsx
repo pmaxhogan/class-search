@@ -4,16 +4,7 @@ import React from "react";
 import useSWR from "swr";
 import ResultRow from "./ResultRow";
 import Typography from "@mui/material/Typography";
-import CardContent from "@mui/material/CardContent";
-import Card from '@mui/material/Card';
-import Paper from "@mui/material/Paper";
-import {green} from '@mui/material/colors';
-import {Grid} from "@mui/material";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import IconLabeledText from "./IconLabeledText";
-import ScheduleIcon from "@mui/icons-material/Schedule";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
+import TimeGap from "./TimeGap";
 
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -105,29 +96,25 @@ export default function ResultsRows({roomName, startDate}) {
 
 
         return <div>{
-            split.map(({ friendlyDate, results}) => <div key={friendlyDate}>
-                <Typography component="h2" variant="h4" sx={{textAlign: "center", marginTop: "1rem", marginBottom: "1rem"}}>
+            split.map(({friendlyDate, results}) => <div key={friendlyDate}>
+                <Typography component="h2" variant="h4"
+                            sx={{textAlign: "center", marginTop: "1rem", marginBottom: "1rem"}}>
                     {friendlyDate}
                 </Typography>
                 {results.map(item => {
-                    const minutes = Math.round(item.gap / 1000 / 60);
-                    const gap = minutes > 60 ? (Math.floor(minutes / 60) + " hour" + (minutes % 60 > 0 ? " " + (minutes % 60) + " minute" : "")) : minutes + " minute";
                     if (item.gap) {
                         return (
-                            <Accordion sx={{backgroundColor: green[300]}} defaultExpanded>
-                                <AccordionSummary>
-                                    <IconLabeledText icon={<ScheduleIcon/>}
-                                                     label={gap + " gap " + (item.isInitial ? " from now" : "")}/>
-                                </AccordionSummary>
-                            </Accordion>
+                            <TimeGap gapItem={item} key={item.key}/>
                         );
                     } else {
-                        return (<ResultRow key={item.result.key} results={getAllCrosslisted(studyResults, item.result)}/>);
+                        return (
+                            <ResultRow key={item.result.key} results={getAllCrosslisted(studyResults, item.result)}/>);
                     }
                 })}
-            </div>
-        )}</div>
-    } else {
-        return <p>Loading...</p>
+        </div>
+    )}</div>
+    } else
+        {
+            return <p>Loading...</p>
+        }
     }
-}
