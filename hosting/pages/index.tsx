@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useState} from 'react'
 import useSWR from "swr";
 import FloorMapOfRoom from "../components/FloorMapOfRoom";
 import ResultsRows from "../components/ResultsRows";
@@ -24,26 +24,30 @@ function IndexPage() {
     function handleBuildingChange(e) {
         setBuildingName(e.target.value);
     }
+
     function handleFloorChange(e) {
         setFloor(e.target.value);
     }
+
     function handleRoomChange(e) {
         setRoom(e.target.value);
     }
-    function getFloorsFromBuilding(buildingName){
+
+    function getFloorsFromBuilding(buildingName) {
         const building = buildings.find(building => building.building === buildingName);
         return dedupe(building.rooms.map(room => room.floor));
     }
-    function getRoomsFromBuildingFloor(buildingName, floor){
+
+    function getRoomsFromBuildingFloor(buildingName, floor) {
         const building = buildings.find(building => building.building === buildingName);
         return dedupe(building.rooms.filter(building => building.floor.toString() === floor).map(room => room.room));
     }
 
-    function isValid(){
+    function isValid() {
         return dateIsValid && buildingName && floor && room && getFloorsFromBuilding(buildingName).includes(parseInt(floor)) && getRoomsFromBuildingFloor(buildingName, floor).includes(room);
     }
 
-    const fullRoomName =`${buildingName} ${floor}.${room}`;
+    const fullRoomName = `${buildingName} ${floor}.${room}`;
 
     const laterDateIso = laterDate ? new Date(laterDate).toISOString() : null;
 
@@ -58,7 +62,8 @@ function IndexPage() {
             <h1>Find Study Rooms In</h1>
             <select value={buildingName} onChange={handleBuildingChange}>
                 <option value="">Select a building</option>
-                {buildings.map(building => building.building).sort().map(building => (<option value={building} key={building}>{building}</option>))}
+                {buildings.map(building => building.building).sort().map(building => (
+                    <option value={building} key={building}>{building}</option>))}
             </select>
             {buildingName && <select value={floor} onChange={handleFloorChange}>
                 <option value="">Select a floor</option>
@@ -66,7 +71,8 @@ function IndexPage() {
             </select>}
             {floor && <select value={room} onChange={handleRoomChange}>
                 <option value="">Select a room</option>
-                {getRoomsFromBuildingFloor(buildingName, floor).map(room => (<option value={room} key={room}>{room}</option>))}
+                {getRoomsFromBuildingFloor(buildingName, floor).map(room => (
+                    <option value={room} key={room}>{room}</option>))}
             </select>}
 
             <br/>
@@ -74,19 +80,19 @@ function IndexPage() {
             <button onClick={() => setIsDateLater(true)} disabled={isDateLater}>Study Later</button>
             {isDateLater && <>
                 <h2>Study At</h2>
-                <input type="datetime-local" value={laterDate} className={dateClass} onChange={e => setLaterDate(e.target.value)}/>
+                <input type="datetime-local" value={laterDate} className={dateClass}
+                       onChange={e => setLaterDate(e.target.value)}/>
             </>}
 
             {isValid() ? (<>
                 <p>{fullRoomName}</p>
                 <FloorMapOfRoom buildingName={buildingName} floor={floor} room={room}/>
-                <ResultsRows roomName = {fullRoomName} startDate={laterDateIso}/>
+                <ResultsRows roomName={fullRoomName} startDate={laterDateIso}/>
             </>) : (dateIsValid ? <p>Invalid room</p> : <p>Invalid date</p>)
             }
         </main>
     )
 }
-
 
 
 export default IndexPage

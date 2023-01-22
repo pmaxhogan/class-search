@@ -97,24 +97,23 @@ export default function ResultsRows({roomName, startDate}) {
 
         return <div>{
             split.map(({friendlyDate, results}) => <div key={friendlyDate}>
-                <Typography component="h2" variant="h4"
-                            sx={{textAlign: "center", marginTop: "1rem", marginBottom: "1rem"}}>
-                    {friendlyDate}
-                </Typography>
-                {results.map(item => {
-                    if (item.gap) {
-                        return (
-                            <TimeGap gapItem={item} key={item.key}/>
-                        );
-                    } else {
-                        return (
-                            <ResultRow key={item.result.key} results={getAllCrosslisted(studyResults, item.result)}/>);
-                    }
-                })}
-        </div>
-    )}</div>
-    } else
-        {
-            return <p>Loading...</p>
-        }
+                    <Typography component="h2" variant="h4"
+                                sx={{textAlign: "center", marginTop: "1rem", marginBottom: "1rem"}}>
+                        {friendlyDate}
+                    </Typography>
+                    {results.map(item => {
+                        if (item.gap) {
+                            return (
+                                <TimeGap gapItem={item} key={item.key}/>
+                            );
+                        } else {
+                            return (
+                                <ResultRow key={item.result.key} results={getAllCrosslisted(studyResults, item.result)}/>);
+                        }
+                    })}
+                </div>
+            )}</div>
+    } else {
+        return <p>Loading...</p>
     }
+}
