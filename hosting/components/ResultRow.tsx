@@ -17,11 +17,22 @@ import IconLabeledText from "./IconLabeledText";
 
 const pluralize = (count, noun, suffix = "s") => `${count} ${noun}${count !== 1 ? suffix : ""}`;
 
+const isoToDurationUntilStr = (iso) => {
+    const dateTimeObj = DateTime.fromISO("2023-01-29T08:50:53.788Z", {zone: "local"});
+    const durationUntil = dateTimeObj.diffNow().shiftTo("days", "hours", "minutes").toObject();
+
+    if(durationUntil.days > 0) {
+        return `${pluralize(durationUntil.days, "day")}, ${pluralize(durationUntil.hours, "hour")} & ${pluralize(Math.floor(durationUntil.minutes), "minute")}`;
+    }else if(durationUntil.hours > 0) {
+        return `${pluralize(durationUntil.hours, "hour")} & ${pluralize(Math.floor(durationUntil.minutes), "minute")}`;
+    }else{
+        return `${pluralize(Math.floor(durationUntil.minutes), "minute")}`;
+    }
+};
+
 export default function ResultRow({results}) {
     const result = results[0];
-    const dateTimeObj = DateTime.fromISO(result.nextMeeting, {zone: "local"});
-    const durationUntil = dateTimeObj.diffNow().shiftTo("hours", "minutes").toObject();
-    const durationUntilStr = `${pluralize(durationUntil.hours, "hour")} and ${pluralize(Math.floor(durationUntil.minutes), "minute")}`;
+    const durationUntilStr = isoToDurationUntilStr(result.nextMeeting);
 
     const statusText = "Status: " + (result.courseSection.section.isStopped ? "Stopped" : (result.courseSection.section.isCancelled ? "Cancelled" : (result.courseSection.section.isOpen ? "Open" : "Closed")));
 
@@ -29,6 +40,7 @@ export default function ResultRow({results}) {
     const days = result.courseSection.section.days;
     const whenItOccurs = days.type === "once" ? days.when : (days.type === "recurring" ? days.when.join(", ") : "Unknown");
 
+    console.log(result.courseSection);
     const {section, course} = result.courseSection;
     return <Accordion>
         <AccordionSummary
@@ -40,10 +52,10 @@ export default function ResultRow({results}) {
                   justifyContent="space-between"
                   alignItems="center">
                 <Grid item xs={12} sm={4}>
-                    <IconLabeledText icon={<TimerIcon/>} label={durationUntilStr + " from now"}/>
+                    <IconLabeledText icon={<ScheduleIcon/>} label={section.time.start + " - " + section.time.end}/>
                 </Grid>
                 <Grid item xs={12} sm={4}>
-                    <IconLabeledText icon={<ScheduleIcon/>} label={section.time.start + " - " + section.time.end}/>
+                    <IconLabeledText icon={<TimerIcon/>} label={durationUntilStr + " from now"}/>
                 </Grid>
                 <Grid item xs={12} sm={4}>
                     <IconLabeledText icon={<NumbersIcon/>}
