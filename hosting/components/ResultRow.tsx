@@ -18,7 +18,7 @@ import IconLabeledText from "./IconLabeledText";
 const pluralize = (count, noun, suffix = "s") => `${count} ${noun}${count !== 1 ? suffix : ""}`;
 
 const isoToDurationUntilStr = (iso) => {
-    const dateTimeObj = DateTime.fromISO("2023-01-29T08:50:53.788Z", {zone: "local"});
+    const dateTimeObj = DateTime.fromISO(iso, {zone: "local"});
     const durationUntil = dateTimeObj.diffNow().shiftTo("days", "hours", "minutes").toObject();
 
     if(durationUntil.days > 0) {
@@ -40,7 +40,6 @@ export default function ResultRow({results}) {
     const days = result.courseSection.section.days;
     const whenItOccurs = days.type === "once" ? days.when : (days.type === "recurring" ? days.when.join(", ") : "Unknown");
 
-    console.log(result.courseSection);
     const {section, course} = result.courseSection;
     return <Accordion>
         <AccordionSummary

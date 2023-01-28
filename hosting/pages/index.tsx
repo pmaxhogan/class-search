@@ -3,6 +3,10 @@ import useSWR from "swr";
 import FloorMapOfRoom from "../components/FloorMapOfRoom";
 import ResultsRows from "../components/ResultsRows";
 import Disclaimer from "../components/Disclaimer";
+import {Autocomplete, Grid, MenuItem, Stack, Switch, TextField} from "@mui/material";
+import Typography from "@mui/material/Typography";
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import {DateTime} from "luxon";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -10,27 +14,34 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const dedupe = arr => [...new Set(arr)];
 
 function IndexPage() {
-    const [buildingName, setBuildingName] = useState("");
-    const [floor, setFloor] = useState("");
-    const [room, setRoom] = useState("");
+    const [buildingName, setBuildingName] = useState(null);
+    const [floor, setFloor] = useState(null);
+    const [room, setRoom] = useState(null);
     const [isDateLater, setIsDateLater] = useState(false);
     const [laterDate, setLaterDate] = useState(null);
+    const [dateElementVal, setDateElementVal] = useState(null);
 
     // @ts-ignore
     const dateIsValid = !isNaN(new Date(laterDate));
 
     const dateClass = dateIsValid ? "" : "invalid";
 
-    function handleBuildingChange(e) {
-        setBuildingName(e.target.value);
+    function handleBuildingChange(_, newValue) {
+        console.log("building changed", newValue);
+        setBuildingName(newValue);
+        setFloor(null);
+        setRoom(null);
     }
 
-    function handleFloorChange(e) {
-        setFloor(e.target.value);
+    function handleFloorChange(_, newValue) {
+        console.log("floor changed", newValue);
+        setFloor(newValue);
+        setRoom(null);
     }
 
-    function handleRoomChange(e) {
-        setRoom(e.target.value);
+    function handleRoomChange(_, newValue) {
+        console.log("room changed", newValue);
+        setRoom(newValue);
     }
 
     function getFloorsFromBuilding(buildingName) {
@@ -59,36 +70,69 @@ function IndexPage() {
         <main>
             <Disclaimer/>
 
-            <h1>Find Study Rooms In</h1>
-            <select value={buildingName} onChange={handleBuildingChange}>
-                <option value="">Select a building</option>
-                {buildings.map(building => building.building).sort().map(building => (
-                    <option value={building} key={building}>{building}</option>))}
-            </select>
-            {buildingName && <select value={floor} onChange={handleFloorChange}>
-                <option value="">Select a floor</option>
-                {getFloorsFromBuilding(buildingName).map(floor => (<option value={floor} key={floor}>{floor}</option>))}
-            </select>}
-            {floor && <select value={room} onChange={handleRoomChange}>
-                <option value="">Select a room</option>
-                {getRoomsFromBuildingFloor(buildingName, floor).map(room => (
-                    <option value={room} key={room}>{room}</option>))}
-            </select>}
+            <Typography component="h1" variant="h1" sx={{textAlign: "center"}}>Search Room</Typography>
+            <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sm={6} md={4}>
+                    <Autocomplete size="small" value={buildingName} onChange={handleBuildingChange}
+                                  options={buildings.map(building => building.building).sort()}
+                                  renderInput={(params) => <TextField {...params} label="Building"
+                                                                      variant="outlined"/>}/>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4}>
+                    {buildingName && <Autocomplete size="small" value={floor} onChange={handleFloorChange}
+                                                   options={getFloorsFromBuilding(buildingName).sort().map(floor => floor.toString())}
+                                                   renderInput={(params) => <TextField {...params} label="Floor"
+                                                                                       variant="outlined"/>}/>}
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4}>
+                    {floor && <Autocomplete size="small" value={room} onChange={handleRoomChange}
+                                            options={getRoomsFromBuildingFloor(buildingName, floor).sort()}
+                                            renderInput={(params) => <TextField {...params} label="Room"
+                                                                                variant="outlined"/>}/>}
+                        </Grid>
+                    </Grid>
 
-            <br/>
-            <button onClick={() => setIsDateLater(false)} disabled={!isDateLater}>Study Now</button>
-            <button onClick={() => setIsDateLater(true)} disabled={isDateLater}>Study Later</button>
-            {isDateLater && <>
-                <h2>Study At</h2>
-                <input type="datetime-local" value={laterDate} className={dateClass}
-                       onChange={e => setLaterDate(e.target.value)}/>
-            </>}
+
+                    <Stack direction="row" spacing={1} alignItems="center">
+                        <Typography variant="subtitle2">Study Now</Typography>
+                        <Switch
+                            checked={isDateLater}
+                            onChange={(_, newState) => setIsDateLater(newState)}
+                            inputProps={{ 'aria-label': 'controlled' }}
+                        />
+                        <Typography variant="subtitle2">Study Later</Typography>
+                    </Stack>
+                    {isDateLater && <>
+                        <Typography variant="subtitle1">Study At</Typography>
+                        <DateTimePicker
+                            renderInput={(props) => <TextField {...props} />}
+                            label="DateTimePicker"
+                            value={dateElementVal}
+                            onAccept={(acceptedDate) => {
+                                console.log("ACCEPTED", acceptedDate?.toISO());
+                                setLaterDate(acceptedDate ? acceptedDate.toISO() : null);
+                                console.log(laterDateIso);
+                            }}
+                            onChange={(changedDate) => setDateElementVal(changedDate )}
+                            mask="__/__/____ __:__ _M"
+                            minDateTime={DateTime.now()}
+                        />
+                    </>}
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    {isValid() && <><p>{fullRoomName}</p>
+                        <FloorMapOfRoom buildingName={buildingName} floor={floor} room={room}/>
+                    </>
+                    }
+                </Grid>
+            </Grid>
 
             {isValid() ? (<>
-                <p>{fullRoomName}</p>
-                <FloorMapOfRoom buildingName={buildingName} floor={floor} room={room}/>
+                <Typography component="h2" variant="h2" sx={{textAlign: "center"}}>Next Classes</Typography>
                 <ResultsRows roomName={fullRoomName} startDate={laterDateIso}/>
-            </>) : (dateIsValid ? <p>Invalid room</p> : <p>Invalid date</p>)
+            </>) : (dateIsValid ? <p>Select a room</p> : <p>Invalid date</p>)
             }
         </main>
     )

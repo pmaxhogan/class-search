@@ -110,7 +110,7 @@ export default function ResultsRows({roomName, startDate}) {
 
         return <div>{
             resultRows.map(({friendlyDate, results}) => <div key={friendlyDate}>
-                    <Typography component="h2" variant="h4"
+                    <Typography component="h3" variant="h3"
                                 sx={{textAlign: "center", marginTop: "1rem", marginBottom: "1rem"}}>
                         {friendlyDate}
                     </Typography>
