@@ -22,6 +22,74 @@ const endingTimeOfSection = previousResult => {
     return previousEndDateTime;
 };
 
+const dedupeCrosslistedClasses = rows => {
+    let previousMeetingTime = null;
+
+    return rows?.filter(result => {
+        result.key = result.nextMeeting + "_" + result.courseSection.course.title;
+        if (previousMeetingTime === result.nextMeeting) {
+            return false;
+        }
+        previousMeetingTime = result.nextMeeting;
+        return true;
+    });
+}
+
+const getResultRows = (dedupedResults, startDate) => {
+    const resultRows = [];
+    const studyingLater = startDate !== null;
+
+    for (const result of dedupedResults) {
+        const nextMeetingDate = new Date(result.nextMeeting);
+        const dateString = (new Date(result.nextMeeting)).toLocaleDateString();
+        const isNewDay = resultRows[resultRows.length - 1]?.date !== dateString;
+
+        let showGap = false;
+        let isInitial = false;
+        let timeDelta;
+        if (isNewDay) {
+            const isToday = nextMeetingDate.toDateString() === (new Date()).toDateString();
+            if (isToday && !studyingLater) {
+                timeDelta = nextMeetingDate.getTime() - ((new Date())).getTime();
+                if(timeDelta > 0) {
+                    showGap = true;
+                    isInitial = true;
+                }
+            }
+
+            const dayOfWeek = isToday ? "Today" : nextMeetingDate.toLocaleDateString("en-US", {weekday: "long"});
+            const isWithinAWeek = nextMeetingDate.getTime() - (new Date()).getTime() < 1000 * 60 * 60 * 24 * 7;
+            const date = isWithinAWeek ? dayOfWeek : nextMeetingDate.toLocaleDateString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric"
+            });
+            resultRows.push({date: dateString, results: [], friendlyDate: date});
+        } else {
+            const previous = resultRows[resultRows.length - 1];
+            const previousResult = previous.results[previous.results.length - 1].result;
+
+            if (previousResult) {
+                const previousEndDateTime = endingTimeOfSection(previousResult);
+
+                timeDelta = nextMeetingDate.getTime() - previousEndDateTime.getTime();
+
+                if (timeDelta > 1000 * 60 * 15) {
+                    showGap = true;
+                }
+            }
+        }
+
+        if (showGap) {
+            resultRows[resultRows.length - 1].results.push({gap: timeDelta, key: result.key + "_gap", isInitial});
+        }
+
+        resultRows[resultRows.length - 1].results.push({result});
+    }
+
+    return resultRows;
+}
+
 
 export default function ResultsRows({roomName, startDate}) {
 
@@ -34,69 +102,14 @@ export default function ResultsRows({roomName, startDate}) {
         return <p>Failed to load results :(</p>
     }
 
-    let previousMeetingTime = null;
     if (studyResults) {
-        const dedupedResults = studyResults?.filter(result => {
-            result.key = result.nextMeeting + "_" + result.courseSection.course.title;
-            if (previousMeetingTime === result.nextMeeting) {
-                // console.log("deduping", result);
-                return false;
-            }
-            previousMeetingTime = result.nextMeeting;
-            return true;
-        });
+        const dedupedResults = dedupeCrosslistedClasses(studyResults);
 
-        const split = [];
-
-        for (const result of dedupedResults) {
-            const nextMeetingDate = new Date(result.nextMeeting);
-            const dateString = (new Date(result.nextMeeting)).toLocaleDateString();
-            const isNewDay = split[split.length - 1]?.date !== dateString;
-
-            let showGap = false;
-            let isInitial = false;
-            let timeDelta;
-            if (isNewDay) {
-                const isToday = nextMeetingDate.toDateString() === new Date().toDateString();
-                if (isToday) {
-                    timeDelta = nextMeetingDate.getTime() - (new Date()).getTime();
-                    showGap = true;
-                    isInitial = true;
-                }
-
-                const dayOfWeek = isToday ? "Today" : nextMeetingDate.toLocaleDateString("en-US", {weekday: "long"});
-                const isWithinAWeek = nextMeetingDate.getTime() - new Date().getTime() < 1000 * 60 * 60 * 24 * 7;
-                const date = isWithinAWeek ? dayOfWeek : nextMeetingDate.toLocaleDateString("en-US", {
-                    month: "long",
-                    day: "numeric",
-                    year: "numeric"
-                });
-                split.push({date: dateString, results: [], friendlyDate: date});
-            } else {
-                const previous = split[split.length - 1];
-                const previousResult = previous.results[previous.results.length - 1].result;
-
-                if (previousResult) {
-                    const previousEndDateTime = endingTimeOfSection(previousResult);
-
-                    timeDelta = nextMeetingDate.getTime() - previousEndDateTime.getTime();
-
-                    if (timeDelta > 1000 * 60 * 15) {
-                        showGap = true;
-                    }
-                }
-            }
-
-            if (showGap) {
-                split[split.length - 1].results.push({gap: timeDelta, key: result.key + "_gap", isInitial});
-            }
-
-            split[split.length - 1].results.push({result});
-        }
+        const resultRows = getResultRows(dedupedResults, startDate);
 
 
         return <div>{
-            split.map(({friendlyDate, results}) => <div key={friendlyDate}>
+            resultRows.map(({friendlyDate, results}) => <div key={friendlyDate}>
                     <Typography component="h2" variant="h4"
                                 sx={{textAlign: "center", marginTop: "1rem", marginBottom: "1rem"}}>
                         {friendlyDate}

@@ -12,7 +12,7 @@ export default function TimeGap({gapItem}) {
     return (<Accordion sx={{backgroundColor: green[300]}} defaultExpanded>
         <AccordionSummary>
             <IconLabeledText icon={<ScheduleIcon/>}
-                             label={gap + " gap " + (gapItem.isInitial ? " from now" : "")}/>
+                             label={gap + " gap " + (gapItem.isInitial ? " beginning now" : "")}/>
         </AccordionSummary>
     </Accordion>);
 }
