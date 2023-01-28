@@ -2,6 +2,7 @@
 
 import React, {useEffect, useState} from "react";
 import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 
 
 export default function FloorMapOfRoom({buildingName, floor, room}) {
@@ -15,13 +16,10 @@ export default function FloorMapOfRoom({buildingName, floor, room}) {
         setErrored(false);
     }, [buildingName, floor, room]);
 
-    if (errored) {
-        return <p>Failed to load floor map, good luck!</p>
-    }
     return <a onClick={openImage}>
-        <img
+        {errored ? <Typography>Failed to load map preview</Typography> : <img
         src={`https://dygz37jdyaml.cloudfront.net/images/utd-room-maps-2021-05-04/${buildingName}_${floor}.${room}.png`}
-        alt="map" onError={() => setErrored(true)} style={{cursor: "pointer", display: "block"}}/>
+        alt="map" onError={() => setErrored(true)} style={{cursor: "pointer", display: "block"}}/>}
         <Button variant="contained">Locate Room on Map</Button>
     </a>
 }
