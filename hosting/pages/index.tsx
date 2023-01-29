@@ -20,9 +20,8 @@ function IndexPage() {
     const [isDateLater, setIsDateLater] = useState(false);
     const [laterDate, setLaterDate] = useState(null);
     const [dateElementVal, setDateElementVal] = useState(null);
+    const [dateIsValid, setDateIsValid] = useState(true);
 
-    // @ts-ignore
-    const dateIsValid = !isNaN(new Date(laterDate));
 
     const dateClass = dateIsValid ? "" : "invalid";
 
@@ -110,12 +109,11 @@ function IndexPage() {
                             renderInput={(props) => <TextField {...props} />}
                             label="DateTimePicker"
                             value={dateElementVal}
-                            onAccept={(acceptedDate) => {
-                                console.log("ACCEPTED", acceptedDate?.toISO());
-                                setLaterDate(acceptedDate ? acceptedDate.toISO() : null);
-                                console.log(laterDateIso);
+                            onChange={(changedDate) => {
+                                setDateElementVal(changedDate );
+                                setLaterDate(changedDate ? changedDate.toISO() : null);
+                                setDateIsValid(changedDate.isValid);
                             }}
-                            onChange={(changedDate) => setDateElementVal(changedDate )}
                             mask="__/__/____ __:__ _M"
                             minDateTime={DateTime.now()}
                         />
