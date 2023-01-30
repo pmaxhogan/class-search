@@ -26,7 +26,6 @@ export default function ResultRow({results, startDate}) {
 
     const courseCodesFull = results.map(result => result.courseSection.course.prefix + " " + result.courseSection.course.code + "." + result.courseSection.section.number).join(", ");
     let courseCodes;
-    if (courseCodesFull.includes("BMEN")) console.log("result.length > 2", result);
     if (result.length > 2) {
         courseCodes = result.courseSection.course.prefix + " " + result.courseSection.course.code + "." + result.courseSection.section.number + ", ...";
     } else {

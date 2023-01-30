@@ -24,8 +24,6 @@ export default function BuildingResultRows({buildingName, rooms, startDate}) {
         roomSections.push({roomStr, data, error});
     });
 
-    console.log("room", roomSections[0]);
-
     return <div>{
         roomSections.sort(compareSections).map(room => room.data &&
             <BuildingRow room={room.roomStr} nextMeetings={room.data} key={room.roomStr} startDate={startDate}/>

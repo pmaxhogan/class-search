@@ -30,7 +30,6 @@ export default function BuildingRow({room, nextMeetings, startDate}) {
 
     const {nextMeeting, courseSection: {course, section}} = nextMeetingResult;
 
-    // console.log(nextMeeting, new Date(nextMeeting), new Date(nextMeeting).getTime(), "a", startDateAsDate.getTime() + timeAllowance);
     const isBusy = new Date(nextMeeting).getTime() < startDateAsDate.getTime() + timeAllowance;
 
     let freeAt = null;
@@ -39,7 +38,6 @@ export default function BuildingRow({room, nextMeetings, startDate}) {
         for (const nextMeetingResult of nextMeetings) {
             const startsAt = new Date(nextMeetingResult.nextMeeting);
             if (freeAt && startsAt.getTime() > freeAt.getTime() + timeAllowance) {
-                console.log("BREAK", !!freeAt, startsAt.getTime() > freeAt.getTime() + timeAllowance);
                 break;
             }
             freeAt = endingTimeOfSection(nextMeetingResult);
@@ -55,7 +53,6 @@ export default function BuildingRow({room, nextMeetings, startDate}) {
     // noinspection JSObjectNullOrUndefined
     const timerLabel = isBusy ? "busy for " + isoToDurationUntilString(freeAt.toISOString(), startDate) : "free for " + durationUntilStr;
 
-    console.log(section, section.room);
     const {building, floor, room: roomNumber} = strToBuildingFloorRoom(room);
 
     return <Accordion>
