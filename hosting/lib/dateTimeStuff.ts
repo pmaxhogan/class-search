@@ -3,7 +3,7 @@ import {DateTime} from "luxon";
 const pluralize = (count, noun, suffix = "s") => `${count} ${noun}${count !== 1 ? suffix : ""}`;
 
 export const isoToDurationUntilString = (iso, referenceDateIso: string) => {
-    if(!referenceDateIso) referenceDateIso = new Date().toISOString();
+    if (!referenceDateIso) referenceDateIso = new Date().toISOString();
 
     const dateTimeObj = DateTime.fromISO(iso, {zone: "local"});
     const durationUntil = dateTimeObj.diff(DateTime.fromJSDate(new Date(referenceDateIso))).shiftTo("days", "hours", "minutes").toObject();
@@ -35,7 +35,7 @@ export const endingTimeOfSection = rowResult => {
     const hours = previousEnd.split(":")[0];
     if (hours === "12") {
         previousEndDateTime.setHours(isPm ? 12 : 0);
-    }else {
+    } else {
         previousEndDateTime.setHours(parseInt(hours) + (isPm ? 12 : 0));
     }
     previousEndDateTime.setMinutes(parseInt(previousEnd.split(":")[1]));

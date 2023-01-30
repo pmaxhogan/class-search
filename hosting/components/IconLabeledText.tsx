@@ -1,10 +1,10 @@
 import React from "react";
-import {Grid, Stack, Tooltip, Typography} from "@mui/material";
+import {Stack, Tooltip, Typography} from "@mui/material";
 
 export default function IconLabeledText({icon, label, tooltip = ""}) {
     return <Stack direction="row" spacing={1} alignItems="center">
-            {tooltip ? <Tooltip title={tooltip}>{icon}</Tooltip> :
+        {tooltip ? <Tooltip title={tooltip}>{icon}</Tooltip> :
             icon}
-            <Typography>{label}</Typography>
+        <Typography>{label}</Typography>
     </Stack>
 }

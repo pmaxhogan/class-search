@@ -10,9 +10,9 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import PortraitIcon from '@mui/icons-material/Portrait';
 import NumbersIcon from '@mui/icons-material/Numbers';
 import InfoIcon from '@mui/icons-material/Info';
-import {Grid, Tooltip} from "@mui/material";
+import {Grid} from "@mui/material";
 import IconLabeledText from "./IconLabeledText";
-import {isoToDurationUntilString, getWhenItOccurs, getStatusText} from "../lib/dateTimeStuff";
+import {getStatusText, getWhenItOccurs, isoToDurationUntilString} from "../lib/dateTimeStuff";
 
 
 export default function ResultRow({results, startDate}) {

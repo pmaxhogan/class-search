@@ -41,7 +41,7 @@ const getResultRows = (dedupedResults, startDate) => {
             const isToday = nextMeetingDate.toDateString() === (new Date()).toDateString();
             if (isToday && !studyingLater) {
                 timeDelta = nextMeetingDate.getTime() - ((new Date())).getTime();
-                if(timeDelta > 0) {
+                if (timeDelta > 0) {
                     showGap = true;
                     isInitial = true;
                 }
@@ -111,7 +111,8 @@ export default function RoomResultRows({roomName, startDate}) {
                             );
                         } else {
                             return (
-                                <ResultRow key={item.result.key} results={getAllCrosslisted(studyResults, item.result)} startDate={startDate}/>);
+                                <ResultRow key={item.result.key} results={getAllCrosslisted(studyResults, item.result)}
+                                           startDate={startDate}/>);
                         }
                     })}
                 </div>

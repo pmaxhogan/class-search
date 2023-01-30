@@ -6,7 +6,7 @@ import Disclaimer from "../components/Disclaimer";
 import {
     Autocomplete,
     Card,
-    CardContent,
+    CardContent, CardHeader,
     CardMedia,
     Chip,
     Grid,
@@ -23,6 +23,8 @@ import {fetcher} from '../lib/fetcher';
 import InfoIcon from "@mui/icons-material/Info";
 import SelectARoomBuilding from "../components/SelectARoomBuilding";
 import {buildingFloorRoomToStr} from "../lib/misc";
+import FloorMapOfRoomCard from "../components/FloormapOfRoomCard";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 
 // @ts-ignore
 const dedupe = arr => [...new Set(arr)];
@@ -85,64 +87,72 @@ function IndexPage() {
 
             <Typography component="h1" variant="h1" sx={{textAlign: "center"}}>Search Building or Room</Typography>
             <Grid container spacing={2}>
+
                 <Grid item xs={12} sm={6}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} sm={6} md={4}>
-                            <Autocomplete size="small" value={buildingName} onChange={handleBuildingChange}
-                                          options={buildings.map(building => building.building).sort()}
-                                          renderInput={(params) => <TextField {...params} label="Building"
-                                                                              variant="outlined"/>}/>
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={4}>
-                            {buildingName && <Autocomplete size="small" value={floor} onChange={handleFloorChange}
-                                                           options={getFloorsFromBuilding(buildingName).sort().map(floor => floor.toString())}
-                                                           renderInput={(params) => <TextField {...params} label="Floor"
-                                                                                               variant="outlined"/>}/>}
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={4}>
-                            {floor && <Autocomplete size="small" value={room} onChange={handleRoomChange}
-                                                    options={getRoomsFromBuildingFloor(buildingName, floor).sort()}
-                                                    renderInput={(params) => <TextField {...params} label="Room"
-                                                                                        variant="outlined"/>}/>}
-                        </Grid>
-                    </Grid>
+                    <Card>
+                        <CardHeader title="lol"/>
+                        <CardContent>
+                            <Stack direction="column" spacing={1}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} sm={6} md={4}>
+                                    <Autocomplete size="small" value={buildingName} onChange={handleBuildingChange}
+                                                  options={buildings.map(building => building.building).sort()}
+                                                  renderInput={(params) => <TextField {...params} label="Building"
+                                                                                      variant="outlined"/>}/>
+                                </Grid>
+                                <Grid item xs={12} sm={6} md={4}>
+                                    {buildingName &&
+                                        <Autocomplete size="small" value={floor} onChange={handleFloorChange}
+                                                      options={getFloorsFromBuilding(buildingName).sort().map(floor => floor.toString())}
+                                                      renderInput={(params) => <TextField {...params} label="Floor"
+                                                                                          variant="outlined"/>}/>}
+                                </Grid>
+                                <Grid item xs={12} sm={6} md={4}>
+                                    {floor && <Autocomplete size="small" value={room} onChange={handleRoomChange}
+                                                            options={getRoomsFromBuildingFloor(buildingName, floor).sort()}
+                                                            renderInput={(params) => <TextField {...params} label="Room"
+                                                                                                variant="outlined"/>}/>}
+                                </Grid>
+                            </Grid>
 
-
-                    <Stack direction="row" spacing={1} alignItems="center">
-                        <Typography variant="subtitle2">Study Now</Typography>
-                        <Switch
-                            checked={isDateLater}
-                            onChange={(_, newState) => setIsDateLater(newState)}
-                            inputProps={{'aria-label': 'controlled'}}
-                        />
-                        <Stack direction="row" spacing={1} alignItems="center">
-                            <Typography variant="subtitle2">Study Later</Typography>
-                            <Chip label="beta" color="warning" size="small"/>
-                        </Stack>
-                    </Stack>
-                    {isDateLater && <>
-                        <Card elevation={3}>
-                            <CardContent>
-                                <Typography variant="subtitle1">Study At</Typography>
-                                <DateTimePicker
-                                    renderInput={(props) => <TextField {...props} />}
-                                    label="Select a date"
-                                    value={dateElementVal}
-                                    onChange={(changedDate) => {
-                                        setDateElementVal(changedDate);
-                                        setLaterDate(changedDate ? changedDate.toISO() : null);
-                                        setDateIsValid(changedDate.isValid);
-                                    }}
-                                    mask="__/__/____ __:__ _M"
-                                    minDateTime={DateTime.now()}
+                            <Stack direction="row" spacing={1} alignItems="center">
+                                <Typography variant="subtitle2">Study Now</Typography>
+                                <Switch
+                                    checked={isDateLater}
+                                    onChange={(_, newState) => setIsDateLater(newState)}
+                                    inputProps={{'aria-label': 'controlled'}}
                                 />
-                            </CardContent>
-                        </Card>
-                    </>}
+                                <Stack direction="row" spacing={1} alignItems="center">
+                                    <Typography variant="subtitle2">Study Later</Typography>
+                                    <Chip label="beta" color="warning" size="small"/>
+                                </Stack>
+                            </Stack>
+                            {isDateLater && <>
+                                <Card elevation={3}>
+                                    <CardContent>
+                                        <Typography variant="subtitle1">Study At</Typography>
+                                        <DateTimePicker
+                                            renderInput={(props) => <TextField {...props} />}
+                                            label="Select a date"
+                                            value={dateElementVal}
+                                            onChange={(changedDate) => {
+                                                setDateElementVal(changedDate);
+                                                setLaterDate(changedDate ? changedDate.toISO() : null);
+                                                setDateIsValid(changedDate.isValid);
+                                            }}
+                                            mask="__/__/____ __:__ _M"
+                                            minDateTime={DateTime.now()}
+                                        />
+                                    </CardContent>
+                                </Card>
+                            </>}
+                            </Stack>
+                        </CardContent>
+                    </Card>
                 </Grid>
                 <Grid item xs={12} sm={6}>
                     {isValid() && floor && room &&
-                        <FloorMapOfRoom buildingName={buildingName} floor={floor} room={room}/>
+                        <FloorMapOfRoomCard building={buildingName} floor={floor} room={room}/>
                     }
                 </Grid>
             </Grid>

@@ -1,4 +1,3 @@
-import {green} from "@mui/material/colors";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import IconLabeledText from "./IconLabeledText";
 import ScheduleIcon from "@mui/icons-material/Schedule";
