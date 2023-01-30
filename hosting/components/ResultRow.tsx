@@ -1,5 +1,4 @@
 import React from "react";
-import {DateTime} from "luxon";
 import TimerIcon from '@mui/icons-material/Timer';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import Accordion from '@mui/material/Accordion';
@@ -13,32 +12,17 @@ import NumbersIcon from '@mui/icons-material/Numbers';
 import InfoIcon from '@mui/icons-material/Info';
 import {Grid} from "@mui/material";
 import IconLabeledText from "./IconLabeledText";
+import {isoToDurationUntilString, getWhenItOccurs, getStatusText} from "../lib/dateTimeStuff";
 
 
-const pluralize = (count, noun, suffix = "s") => `${count} ${noun}${count !== 1 ? suffix : ""}`;
-
-const isoToDurationUntilStr = (iso) => {
-    const dateTimeObj = DateTime.fromISO(iso, {zone: "local"});
-    const durationUntil = dateTimeObj.diffNow().shiftTo("days", "hours", "minutes").toObject();
-
-    if(durationUntil.days > 0) {
-        return `${pluralize(durationUntil.days, "day")}, ${pluralize(durationUntil.hours, "hour")} & ${pluralize(Math.floor(durationUntil.minutes), "minute")}`;
-    }else if(durationUntil.hours > 0) {
-        return `${pluralize(durationUntil.hours, "hour")} & ${pluralize(Math.floor(durationUntil.minutes), "minute")}`;
-    }else{
-        return `${pluralize(Math.floor(durationUntil.minutes), "minute")}`;
-    }
-};
 
 export default function ResultRow({results}) {
     const result = results[0];
-    const durationUntilStr = isoToDurationUntilStr(result.nextMeeting);
+    const durationUntilStr = isoToDurationUntilString(result.nextMeeting);
 
-    const statusText = "Status: " + (result.courseSection.section.isStopped ? "Stopped" : (result.courseSection.section.isCancelled ? "Cancelled" : (result.courseSection.section.isOpen ? "Open" : "Closed")));
+    const statusText = getStatusText(result);
 
-
-    const days = result.courseSection.section.days;
-    const whenItOccurs = days.type === "once" ? days.when : (days.type === "recurring" ? days.when.join(", ") : "Unknown");
+    const whenItOccurs = getWhenItOccurs(result);
 
     const {section, course} = result.courseSection;
     return <Accordion>
@@ -58,7 +42,7 @@ export default function ResultRow({results}) {
                 </Grid>
                 <Grid item xs={12} sm={4}>
                     <IconLabeledText icon={<NumbersIcon/>}
-                                     label={results.map(result => course.prefix + " " + course.code + "." + result.courseSection.section.number).join(", ")}/>
+                                     label={results.map(result => course.prefix + " " + course.code + "." + section.number).join(", ")}/>
                 </Grid>
             </Grid>
         </AccordionSummary>

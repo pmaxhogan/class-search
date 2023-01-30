@@ -1,0 +1,29 @@
+import useSWR from "swr";
+import { fetcher } from "../lib/fetcher";
+import BuildingRow from "./BuildingRow";
+
+const compareSections = (a, b) => {
+    if(a && a.data && a.data.length && b && b.data && b.data.length){
+        return new Date(a.data[0].nextMeeting).getTime() - new Date(b.data[0].nextMeeting).getTime();
+    }else if(a && a.data && a.data.length){
+        return -1;
+    }else{
+        return 1;
+    }
+};
+
+export default function BuildingResultRows({buildingName, rooms}) {
+    const roomSections = [];
+    rooms.forEach(room => {
+        const roomStr = `${room.building} ${room.floor}.${room.room}`;
+        const {data, error} = useSWR(`/api/study/room?room=${encodeURIComponent(roomStr)}`, fetcher);
+        roomSections.push({roomStr, data, error});
+    });
+    console.log("proms", roomSections);
+
+    return <div>{
+        roomSections.sort(compareSections).map(room => room.data &&
+            <BuildingRow room={room.roomStr} nextMeetings={room.data} key={room.roomStr} />
+        )
+    }</div>;
+}

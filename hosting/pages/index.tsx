@@ -1,14 +1,14 @@
 import React, {useState} from 'react'
 import useSWR from "swr";
 import FloorMapOfRoom from "../components/FloorMapOfRoom";
-import ResultsRows from "../components/ResultsRows";
+import RoomResultRows from "../components/RoomResultRows";
 import Disclaimer from "../components/Disclaimer";
 import {Autocomplete, Grid, MenuItem, Stack, Switch, TextField} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import {DateTime} from "luxon";
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+import BuildingResultRows from '../components/BuildingResultRows';
+import { fetcher } from '../lib/fetcher';
 
 // @ts-ignore
 const dedupe = arr => [...new Set(arr)];
@@ -54,7 +54,7 @@ function IndexPage() {
     }
 
     function isValid() {
-        return dateIsValid && buildingName && floor && room && getFloorsFromBuilding(buildingName).includes(parseInt(floor)) && getRoomsFromBuildingFloor(buildingName, floor).includes(room);
+        return dateIsValid && buildingName && ((!floor && !room) || (floor && room && getFloorsFromBuilding(buildingName).includes(parseInt(floor)) && getRoomsFromBuildingFloor(buildingName, floor).includes(room)));
     }
 
     const fullRoomName = `${buildingName} ${floor}.${room}`;
@@ -69,7 +69,7 @@ function IndexPage() {
         <main>
             <Disclaimer/>
 
-            <Typography component="h1" variant="h1" sx={{textAlign: "center"}}>Search Room</Typography>
+            <Typography component="h1" variant="h1" sx={{textAlign: "center"}}>Search Building or Room</Typography>
             <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
                     <Grid container spacing={2}>
@@ -120,17 +120,22 @@ function IndexPage() {
                     </>}
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                    {isValid() && <><p>{fullRoomName}</p>
+                    {isValid() && floor && room && <><p>{fullRoomName}</p>
                         <FloorMapOfRoom buildingName={buildingName} floor={floor} room={room}/>
                     </>
                     }
                 </Grid>
             </Grid>
 
-            {isValid() ? (<>
-                <Typography component="h2" variant="h2" sx={{textAlign: "center"}}>Next Classes</Typography>
-                <ResultsRows roomName={fullRoomName} startDate={laterDateIso}/>
-            </>) : (dateIsValid ? <p>Select a room</p> : <p>Invalid date</p>)
+            {isValid() ? (
+                (floor && room) ? <>
+                    <Typography component="h2" variant="h2" sx={{textAlign: "center"}}>Next Classes</Typography>
+                    <RoomResultRows roomName={fullRoomName} startDate={laterDateIso}/>
+                </> : <>
+                    <Typography component="h2" variant="h2" sx={{textAlign: "center"}}>Rooms in {buildingName}</Typography>
+                    <BuildingResultRows buildingName={buildingName} rooms={buildings.find(building => building.building === buildingName).rooms}/>
+                </>
+            ) : (dateIsValid ? <p>Select a room</p> : <p>Invalid date</p>)
             }
         </main>
     )

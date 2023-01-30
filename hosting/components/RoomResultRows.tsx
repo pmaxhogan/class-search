@@ -24,6 +24,7 @@ const endingTimeOfSection = previousResult => {
 
 const dedupeCrosslistedClasses = rows => {
     let previousMeetingTime = null;
+    console.log(rows);
 
     return rows?.filter(result => {
         result.key = result.nextMeeting + "_" + result.courseSection.course.title;
@@ -91,7 +92,7 @@ const getResultRows = (dedupedResults, startDate) => {
 }
 
 
-export default function ResultsRows({roomName, startDate}) {
+export default function RoomResultRows({roomName, startDate}) {
 
     const {
         data: studyResults,
