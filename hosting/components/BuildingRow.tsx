@@ -1,5 +1,3 @@
-import useSWR from "swr";
-import { fetcher } from "../lib/fetcher";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -7,7 +5,6 @@ import {Grid} from "@mui/material";
 import IconLabeledText from "./IconLabeledText";
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import TimerIcon from "@mui/icons-material/Timer";
-import NumbersIcon from "@mui/icons-material/Numbers";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import SchoolIcon from "@mui/icons-material/School";
 import PortraitIcon from "@mui/icons-material/Portrait";
@@ -16,21 +13,46 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import InfoIcon from "@mui/icons-material/Info";
 import React from "react";
 import {DateTime} from "luxon";
-import {getStatusText, getWhenItOccurs, isoToDurationUntilString} from "../lib/dateTimeStuff";
+import {
+    endingTimeOfSection,
+    getStatusText,
+    getWhenItOccurs,
+    isoToDurationUntilString,
+    timeAllowance
+} from "../lib/dateTimeStuff";
 
-export default function BuildingRow({room, nextMeetings}) {
-    const nextMeeting = nextMeetings[0];
+export default function BuildingRow({room, nextMeetings, startDate}) {
+    const startDateAsDate = new Date(startDate);
+    const nextMeetingResult = nextMeetings[0];
 
-    if(!nextMeeting) return null;
+    if(!nextMeetingResult) return null;
 
-    const {course, section} = nextMeeting.courseSection;
+    const {nextMeeting, courseSection: {course, section}} = nextMeetingResult;
 
-    const durationUntilStr = isoToDurationUntilString(nextMeeting.nextMeeting);
-    const whenItOccurs = getWhenItOccurs(nextMeeting);
-    const statusText = getStatusText(nextMeeting);
+    // console.log(nextMeeting, new Date(nextMeeting), new Date(nextMeeting).getTime(), "a", startDateAsDate.getTime() + timeAllowance);
+    const isBusy = new Date(nextMeeting).getTime() < startDateAsDate.getTime() + timeAllowance;
+
+    let freeAt = null;
+    if(isBusy){
+        const nextMeetingDate = new Date(nextMeeting);
+        for(const nextMeetingResult of nextMeetings){
+            const startsAt = new Date(nextMeetingResult.nextMeeting);
+            if(freeAt && startsAt.getTime() > freeAt.getTime() + timeAllowance){
+                console.log("BREAK", !!freeAt, startsAt.getTime() > freeAt.getTime() + timeAllowance);
+                break;
+            }
+            freeAt = endingTimeOfSection(nextMeetingResult);
+        }
+    }
+
+    const durationUntilStr = isoToDurationUntilString(nextMeeting, startDate);
+    const whenItOccurs = getWhenItOccurs(nextMeetingResult);
+    const statusText = getStatusText(nextMeetingResult);
 
     const courseString = course.prefix + " " + course.code + "." + section.number;
-    console.log(DateTime.fromISO(nextMeeting.nextMeeting, {zone: "local"}).toRelative());
+
+    // noinspection JSObjectNullOrUndefined
+    const timerLabel = isBusy ? "busy for " + isoToDurationUntilString(freeAt.toISOString(), startDate) : "free for " + durationUntilStr;
 
     return <Accordion>
         <AccordionSummary
@@ -46,7 +68,7 @@ export default function BuildingRow({room, nextMeetings}) {
                                      label={room}/>
                 </Grid>
                 <Grid item xs={12} sm={4}>
-                    <IconLabeledText icon={<TimerIcon/>} label={"free for " + durationUntilStr}/>
+                    <IconLabeledText icon={<TimerIcon/>} label={timerLabel}/>
                 </Grid>
                 <Grid item xs={12} sm={4}>
                     <IconLabeledText icon={<ScheduleIcon/>} label={courseString + " @ " + section.time.start + " - " + section.time.end}/>

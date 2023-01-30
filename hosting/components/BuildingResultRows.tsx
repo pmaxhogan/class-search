@@ -12,18 +12,17 @@ const compareSections = (a, b) => {
     }
 };
 
-export default function BuildingResultRows({buildingName, rooms}) {
+export default function BuildingResultRows({buildingName, rooms, startDate}) {
     const roomSections = [];
     rooms.forEach(room => {
         const roomStr = `${room.building} ${room.floor}.${room.room}`;
-        const {data, error} = useSWR(`/api/study/room?room=${encodeURIComponent(roomStr)}`, fetcher);
+        const {data, error} = useSWR(`/api/study/room?room=${encodeURIComponent(roomStr)}` + (startDate ? `&start=${startDate}` : ""), fetcher);
         roomSections.push({roomStr, data, error});
     });
-    console.log("proms", roomSections);
 
     return <div>{
         roomSections.sort(compareSections).map(room => room.data &&
-            <BuildingRow room={room.roomStr} nextMeetings={room.data} key={room.roomStr} />
+            <BuildingRow room={room.roomStr} nextMeetings={room.data} key={room.roomStr} startDate={startDate} />
         )
     }</div>;
 }

@@ -16,9 +16,10 @@ import {isoToDurationUntilString, getWhenItOccurs, getStatusText} from "../lib/d
 
 
 
-export default function ResultRow({results}) {
+export default function ResultRow({results, startDate}) {
     const result = results[0];
-    const durationUntilStr = isoToDurationUntilString(result.nextMeeting);
+    const durationUntilStr = isoToDurationUntilString(result.nextMeeting, startDate);
+    const timerLabel = durationUntilStr === "0m" ? "in progress" : durationUntilStr + " from " + (startDate ? " then" : " now");
 
     const statusText = getStatusText(result);
 
@@ -38,7 +39,7 @@ export default function ResultRow({results}) {
                     <IconLabeledText icon={<ScheduleIcon/>} label={section.time.start + " - " + section.time.end}/>
                 </Grid>
                 <Grid item xs={12} sm={4}>
-                    <IconLabeledText icon={<TimerIcon/>} label={durationUntilStr + " from now"}/>
+                    <IconLabeledText icon={<TimerIcon/>} label={timerLabel}/>
                 </Grid>
                 <Grid item xs={12} sm={4}>
                     <IconLabeledText icon={<NumbersIcon/>}

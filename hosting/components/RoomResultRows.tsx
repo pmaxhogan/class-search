@@ -5,26 +5,15 @@ import useSWR from "swr";
 import ResultRow from "./ResultRow";
 import Typography from "@mui/material/Typography";
 import TimeGap from "./TimeGap";
+import {endingTimeOfSection, timeAllowance} from "../lib/dateTimeStuff";
 
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const getAllCrosslisted = (courses, course) => courses.filter(course2 => JSON.stringify(course2.courseSection.section.location) === JSON.stringify(course2.courseSection.section.location) && course.nextMeeting === course2.nextMeeting)
 
-const endingTimeOfSection = previousResult => {
-    const previousDate = previousResult.nextMeeting;
-    let previousEnd = previousResult.courseSection.section.time.end;
-    const isPm = previousEnd.includes("pm");
-    previousEnd = previousEnd.replace("pm", "").replace("am", "").trim();
-    const previousEndDateTime = new Date(previousDate);
-    previousEndDateTime.setHours(parseInt(previousEnd.split(":")[0]) + (isPm ? 12 : 0));
-    previousEndDateTime.setMinutes(parseInt(previousEnd.split(":")[1]));
-    return previousEndDateTime;
-};
-
 const dedupeCrosslistedClasses = rows => {
     let previousMeetingTime = null;
-    console.log(rows);
 
     return rows?.filter(result => {
         result.key = result.nextMeeting + "_" + result.courseSection.course.title;
@@ -75,7 +64,7 @@ const getResultRows = (dedupedResults, startDate) => {
 
                 timeDelta = nextMeetingDate.getTime() - previousEndDateTime.getTime();
 
-                if (timeDelta > 1000 * 60 * 15) {
+                if (timeDelta > timeAllowance) {
                     showGap = true;
                 }
             }
@@ -122,7 +111,7 @@ export default function RoomResultRows({roomName, startDate}) {
                             );
                         } else {
                             return (
-                                <ResultRow key={item.result.key} results={getAllCrosslisted(studyResults, item.result)}/>);
+                                <ResultRow key={item.result.key} results={getAllCrosslisted(studyResults, item.result)} startDate={startDate}/>);
                         }
                     })}
                 </div>

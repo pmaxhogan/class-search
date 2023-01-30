@@ -3,12 +3,12 @@ import useSWR from "swr";
 import FloorMapOfRoom from "../components/FloorMapOfRoom";
 import RoomResultRows from "../components/RoomResultRows";
 import Disclaimer from "../components/Disclaimer";
-import {Autocomplete, Grid, MenuItem, Stack, Switch, TextField} from "@mui/material";
+import {Autocomplete, Card, CardContent, Chip, Grid, MenuItem, Stack, Switch, TextField} from "@mui/material";
 import Typography from "@mui/material/Typography";
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import {DateTimePicker} from '@mui/x-date-pickers/DateTimePicker';
 import {DateTime} from "luxon";
 import BuildingResultRows from '../components/BuildingResultRows';
-import { fetcher } from '../lib/fetcher';
+import {fetcher} from '../lib/fetcher';
 
 // @ts-ignore
 const dedupe = arr => [...new Set(arr)];
@@ -59,7 +59,7 @@ function IndexPage() {
 
     const fullRoomName = `${buildingName} ${floor}.${room}`;
 
-    const laterDateIso = laterDate ? new Date(laterDate).toISOString() : null;
+    const laterDateIso = (isDateLater && laterDate) ? new Date(laterDate).toISOString() : null;
 
     const {data: buildings, error: roomsError} = useSWR(`/api/rooms`, fetcher);
     if (roomsError) return <main>Failed to load</main>
@@ -74,22 +74,22 @@ function IndexPage() {
                 <Grid item xs={12} sm={6}>
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={6} md={4}>
-                    <Autocomplete size="small" value={buildingName} onChange={handleBuildingChange}
-                                  options={buildings.map(building => building.building).sort()}
-                                  renderInput={(params) => <TextField {...params} label="Building"
-                                                                      variant="outlined"/>}/>
+                            <Autocomplete size="small" value={buildingName} onChange={handleBuildingChange}
+                                          options={buildings.map(building => building.building).sort()}
+                                          renderInput={(params) => <TextField {...params} label="Building"
+                                                                              variant="outlined"/>}/>
                         </Grid>
                         <Grid item xs={12} sm={6} md={4}>
-                    {buildingName && <Autocomplete size="small" value={floor} onChange={handleFloorChange}
-                                                   options={getFloorsFromBuilding(buildingName).sort().map(floor => floor.toString())}
-                                                   renderInput={(params) => <TextField {...params} label="Floor"
-                                                                                       variant="outlined"/>}/>}
+                            {buildingName && <Autocomplete size="small" value={floor} onChange={handleFloorChange}
+                                                           options={getFloorsFromBuilding(buildingName).sort().map(floor => floor.toString())}
+                                                           renderInput={(params) => <TextField {...params} label="Floor"
+                                                                                               variant="outlined"/>}/>}
                         </Grid>
                         <Grid item xs={12} sm={6} md={4}>
-                    {floor && <Autocomplete size="small" value={room} onChange={handleRoomChange}
-                                            options={getRoomsFromBuildingFloor(buildingName, floor).sort()}
-                                            renderInput={(params) => <TextField {...params} label="Room"
-                                                                                variant="outlined"/>}/>}
+                            {floor && <Autocomplete size="small" value={room} onChange={handleRoomChange}
+                                                    options={getRoomsFromBuildingFloor(buildingName, floor).sort()}
+                                                    renderInput={(params) => <TextField {...params} label="Room"
+                                                                                        variant="outlined"/>}/>}
                         </Grid>
                     </Grid>
 
@@ -99,30 +99,36 @@ function IndexPage() {
                         <Switch
                             checked={isDateLater}
                             onChange={(_, newState) => setIsDateLater(newState)}
-                            inputProps={{ 'aria-label': 'controlled' }}
+                            inputProps={{'aria-label': 'controlled'}}
                         />
-                        <Typography variant="subtitle2">Study Later</Typography>
+                        <Stack direction="row" spacing={1} alignItems="center">
+                            <Typography variant="subtitle2">Study Later</Typography>
+                            <Chip label="beta" color="warning" size="small"/>
+                        </Stack>
                     </Stack>
                     {isDateLater && <>
-                        <Typography variant="subtitle1">Study At</Typography>
-                        <DateTimePicker
-                            renderInput={(props) => <TextField {...props} />}
-                            label="DateTimePicker"
-                            value={dateElementVal}
-                            onChange={(changedDate) => {
-                                setDateElementVal(changedDate );
-                                setLaterDate(changedDate ? changedDate.toISO() : null);
-                                setDateIsValid(changedDate.isValid);
-                            }}
-                            mask="__/__/____ __:__ _M"
-                            minDateTime={DateTime.now()}
-                        />
+                        <Card elevation={3}>
+                            <CardContent>
+                                <Typography variant="subtitle1">Study At</Typography>
+                                <DateTimePicker
+                                    renderInput={(props) => <TextField {...props} />}
+                                    label="Select a date"
+                                    value={dateElementVal}
+                                    onChange={(changedDate) => {
+                                        setDateElementVal(changedDate);
+                                        setLaterDate(changedDate ? changedDate.toISO() : null);
+                                        setDateIsValid(changedDate.isValid);
+                                    }}
+                                    mask="__/__/____ __:__ _M"
+                                    minDateTime={DateTime.now()}
+                                />
+                            </CardContent>
+                        </Card>
                     </>}
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                    {isValid() && floor && room && <><p>{fullRoomName}</p>
+                    {isValid() && floor && room &&
                         <FloorMapOfRoom buildingName={buildingName} floor={floor} room={room}/>
-                    </>
                     }
                 </Grid>
             </Grid>
@@ -132,8 +138,11 @@ function IndexPage() {
                     <Typography component="h2" variant="h2" sx={{textAlign: "center"}}>Next Classes</Typography>
                     <RoomResultRows roomName={fullRoomName} startDate={laterDateIso}/>
                 </> : <>
-                    <Typography component="h2" variant="h2" sx={{textAlign: "center"}}>Rooms in {buildingName}</Typography>
-                    <BuildingResultRows buildingName={buildingName} rooms={buildings.find(building => building.building === buildingName).rooms}/>
+                    <Typography component="h2" variant="h2" sx={{textAlign: "center"}}>Rooms
+                        in {buildingName}</Typography>
+                    <BuildingResultRows buildingName={buildingName}
+                                        rooms={buildings.find(building => building.building === buildingName).rooms}
+                                        startDate={laterDateIso}/>
                 </>
             ) : (dateIsValid ? <p>Select a room</p> : <p>Invalid date</p>)
             }
