@@ -22,6 +22,7 @@ import BuildingResultRows from '../components/BuildingResultRows';
 import {fetcher} from '../lib/fetcher';
 import InfoIcon from "@mui/icons-material/Info";
 import SelectARoomBuilding from "../components/SelectARoomBuilding";
+import {buildingFloorRoomToStr} from "../lib/misc";
 
 // @ts-ignore
 const dedupe = arr => [...new Set(arr)];
@@ -70,7 +71,7 @@ function IndexPage() {
         return dateIsValid && buildingName && ((!floor && !room) || (floor && room && getFloorsFromBuilding(buildingName).includes(parseInt(floor)) && getRoomsFromBuildingFloor(buildingName, floor).includes(room)));
     }
 
-    const fullRoomName = `${buildingName} ${floor}.${room}`;
+    const fullRoomName = buildingFloorRoomToStr(buildingName, floor, room);
 
     const laterDateIso = (isDateLater && laterDate) ? new Date(laterDate).toISOString() : null;
 

@@ -1,7 +1,7 @@
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import {Grid, Tooltip} from "@mui/material";
+import {Card, CardContent, CardHeader, Grid, Stack, Tooltip, Typography} from "@mui/material";
 import IconLabeledText from "./IconLabeledText";
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import TimerIcon from "@mui/icons-material/Timer";
@@ -20,6 +20,9 @@ import {
     isoToDurationUntilString,
     timeAllowance
 } from "../lib/dateTimeStuff";
+import FloorMapOfRoom from "./FloorMapOfRoom";
+import {strToBuildingFloorRoom} from "../lib/misc";
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 
 export default function BuildingRow({room, nextMeetings, startDate}) {
     const startDateAsDate = new Date(startDate);
@@ -54,6 +57,9 @@ export default function BuildingRow({room, nextMeetings, startDate}) {
     // noinspection JSObjectNullOrUndefined
     const timerLabel = isBusy ? "busy for " + isoToDurationUntilString(freeAt.toISOString(), startDate) : "free for " + durationUntilStr;
 
+    console.log(section, section.room);
+    const {building, floor, room: roomNumber} = strToBuildingFloorRoom(room);
+
     return <Accordion>
         <AccordionSummary
             expandIcon={<ExpandMoreIcon/>}
@@ -77,22 +83,36 @@ export default function BuildingRow({room, nextMeetings, startDate}) {
             </Grid>
         </AccordionSummary>
         <AccordionDetails>
-            <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                    <IconLabeledText icon={<SchoolIcon/>} label={course.title}/>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                    <IconLabeledText icon={<PortraitIcon/>} label={section.instructor}/>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                    <IconLabeledText icon={<CalendarMonthIcon/>}
-                                     label={whenItOccurs}/>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                    <IconLabeledText icon={<InfoIcon/>}
-                                     label={statusText} tooltip="Status"/>
-                </Grid>
-            </Grid>
+            <Stack direction="column" spacing={1}>
+                <Card raised>
+                    <CardHeader title="Next Class"/>
+                    <CardContent>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} sm={6}>
+                                <IconLabeledText icon={<SchoolIcon/>} label={course.title}/>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <IconLabeledText icon={<PortraitIcon/>} label={section.instructor}/>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <IconLabeledText icon={<CalendarMonthIcon/>}
+                                                 label={whenItOccurs}/>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <IconLabeledText icon={<InfoIcon/>}
+                                                 label={statusText} tooltip="Status"/>
+                            </Grid>
+                        </Grid>
+                    </CardContent>
+                </Card>
+
+                <Card raised>
+                    <CardHeader title="Location"/>
+                    <CardContent>
+                            <FloorMapOfRoom buildingName={building} floor={floor} room={roomNumber}/>
+                    </CardContent>
+                </Card>
+            </Stack>
         </AccordionDetails>
     </Accordion>
 }

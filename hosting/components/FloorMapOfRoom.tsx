@@ -1,8 +1,9 @@
-// RoomMap.tsx component, has a buildingName prop, a floor prop, and a room prop
-
 import React, {useEffect, useState} from "react";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import {buildingFloorRoomToStr} from "../lib/misc";
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import {Stack} from "@mui/material";
 
 
 export default function FloorMapOfRoom({buildingName, floor, room}) {
@@ -16,13 +17,17 @@ export default function FloorMapOfRoom({buildingName, floor, room}) {
         setErrored(false);
     }, [buildingName, floor, room]);
 
-    return <>
-        <Typography variant="subtitle1">{buildingName}</Typography>
+    const str = buildingFloorRoomToStr(buildingName, floor, room);
+
+    return <div>
+        <Typography variant="subtitle1">{str}</Typography>
         <a onClick={openImage}>
-            {errored ? <Typography>Failed to load map preview</Typography> : <img
-                src={`https://dygz37jdyaml.cloudfront.net/images/utd-room-maps-2021-05-04/${buildingName}_${floor}.${room}.png`}
-                alt="map" onError={() => setErrored(true)} style={{cursor: "pointer", display: "block"}}/>}
-            <Button variant="contained">Locate Room on Map</Button>
+            <Stack spacing={1}>
+                {errored ? <Typography>Failed to load map preview</Typography> : <img
+                    src={`https://dygz37jdyaml.cloudfront.net/images/utd-room-maps-2021-05-04/${buildingName}_${floor}.${room}.png`}
+                    alt="map" onError={() => setErrored(true)} style={{cursor: "pointer", display: "block"}}/>}
+                <Button variant="contained" endIcon={<OpenInNewIcon/>}>Locate Room on Map</Button>
+            </Stack>
         </a>
-    </>;
+    </div>;
 }
