@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import {fetcher} from "../lib/fetcher";
+import {fetcherMultiple} from "../lib/fetcher";
 import BuildingRow from "./BuildingRow";
 import {buildingFloorRoomToStr} from "../lib/misc";
 
@@ -17,12 +17,10 @@ export default function BuildingResultRows({buildingName, rooms, startDate}) {
     const roomSections = [];
     rooms.forEach(room => {
         const roomStr = buildingFloorRoomToStr(room.building, room.floor, room.room);
-        const {
-            data,
-            error
-        } = useSWR(`/api/study/room?room=${encodeURIComponent(roomStr)}` + (startDate ? `&start=${startDate}` : ""), fetcher);
-        roomSections.push({roomStr, data, error});
+        roomSections.push({roomStr, data: null, error: null});
     });
+    const {data, error} = useSWR({urls: roomSections.map(section => `/api/study/room?room=${encodeURIComponent(section.roomStr)}` + (startDate ? `&start=${startDate}` : ""))}, fetcherMultiple);
+    roomSections.forEach((section, idx) => data && (section.data = data[idx]));
 
     return <div>{
         roomSections.sort(compareSections).map(room => room.data &&
