@@ -3,12 +3,25 @@ import useSWR from "swr";
 import FloorMapOfRoom from "../components/FloorMapOfRoom";
 import RoomResultRows from "../components/RoomResultRows";
 import Disclaimer from "../components/Disclaimer";
-import {Autocomplete, Card, CardContent, Chip, Grid, MenuItem, Stack, Switch, TextField} from "@mui/material";
+import {
+    Autocomplete,
+    Card,
+    CardContent,
+    CardMedia,
+    Chip,
+    Grid,
+    MenuItem,
+    Stack,
+    Switch,
+    TextField
+} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import {DateTimePicker} from '@mui/x-date-pickers/DateTimePicker';
 import {DateTime} from "luxon";
 import BuildingResultRows from '../components/BuildingResultRows';
 import {fetcher} from '../lib/fetcher';
+import InfoIcon from "@mui/icons-material/Info";
+import SelectARoomBuilding from "../components/SelectARoomBuilding";
 
 // @ts-ignore
 const dedupe = arr => [...new Set(arr)];
@@ -144,7 +157,7 @@ function IndexPage() {
                                         rooms={buildings.find(building => building.building === buildingName).rooms}
                                         startDate={laterDateIso}/>
                 </>
-            ) : (dateIsValid ? <p>Select a room</p> : <p>Invalid date</p>)
+            ) : (dateIsValid ? <SelectARoomBuilding isBuilding={!!buildingName}/> : <p>Invalid date</p>)
             }
         </main>
     )

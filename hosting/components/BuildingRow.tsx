@@ -1,7 +1,7 @@
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import {Grid} from "@mui/material";
+import {Grid, Tooltip} from "@mui/material";
 import IconLabeledText from "./IconLabeledText";
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import TimerIcon from "@mui/icons-material/Timer";
@@ -25,7 +25,7 @@ export default function BuildingRow({room, nextMeetings, startDate}) {
     const startDateAsDate = new Date(startDate);
     const nextMeetingResult = nextMeetings[0];
 
-    if(!nextMeetingResult) return null;
+    if (!nextMeetingResult) return null;
 
     const {nextMeeting, courseSection: {course, section}} = nextMeetingResult;
 
@@ -33,11 +33,11 @@ export default function BuildingRow({room, nextMeetings, startDate}) {
     const isBusy = new Date(nextMeeting).getTime() < startDateAsDate.getTime() + timeAllowance;
 
     let freeAt = null;
-    if(isBusy){
+    if (isBusy) {
         const nextMeetingDate = new Date(nextMeeting);
-        for(const nextMeetingResult of nextMeetings){
+        for (const nextMeetingResult of nextMeetings) {
             const startsAt = new Date(nextMeetingResult.nextMeeting);
-            if(freeAt && startsAt.getTime() > freeAt.getTime() + timeAllowance){
+            if (freeAt && startsAt.getTime() > freeAt.getTime() + timeAllowance) {
                 console.log("BREAK", !!freeAt, startsAt.getTime() > freeAt.getTime() + timeAllowance);
                 break;
             }
@@ -71,7 +71,8 @@ export default function BuildingRow({room, nextMeetings, startDate}) {
                     <IconLabeledText icon={<TimerIcon/>} label={timerLabel}/>
                 </Grid>
                 <Grid item xs={12} sm={4}>
-                    <IconLabeledText icon={<ScheduleIcon/>} label={courseString + " @ " + section.time.start + " - " + section.time.end}/>
+                    <IconLabeledText icon={<ScheduleIcon/>}
+                                     label={courseString + " @ " + section.time.start + " - " + section.time.end}/>
                 </Grid>
             </Grid>
         </AccordionSummary>
@@ -89,7 +90,7 @@ export default function BuildingRow({room, nextMeetings, startDate}) {
                 </Grid>
                 <Grid item xs={12} sm={6}>
                     <IconLabeledText icon={<InfoIcon/>}
-                                     label={statusText}/>
+                                     label={statusText} tooltip="Status"/>
                 </Grid>
             </Grid>
         </AccordionDetails>

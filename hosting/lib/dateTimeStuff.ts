@@ -17,7 +17,7 @@ export const isoToDurationUntilString = (iso, referenceDateIso: string) => {
     }
 };
 
-export const getStatusText = result => "Status: " + (result.courseSection.section.isStopped ? "Stopped" : (result.courseSection.section.isCancelled ? "Cancelled" : (result.courseSection.section.isOpen ? "Open" : "Closed")));
+export const getStatusText = result => result.courseSection.section.isStopped ? "Stopped" : (result.courseSection.section.isCancelled ? "Cancelled" : (result.courseSection.section.isOpen ? "Open" : "Closed"));
 
 export const getWhenItOccurs = result => {
     const days = result.courseSection.section.days;

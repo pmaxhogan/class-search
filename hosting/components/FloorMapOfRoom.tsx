@@ -8,7 +8,7 @@ import Typography from "@mui/material/Typography";
 export default function FloorMapOfRoom({buildingName, floor, room}) {
     const [errored, setErrored] = useState(false);
 
-    function openImage(){
+    function openImage() {
         window.open(`https://locator.utdallas.edu/${buildingName}_${floor}.${room}`, "_blank");
     }
 
@@ -16,10 +16,13 @@ export default function FloorMapOfRoom({buildingName, floor, room}) {
         setErrored(false);
     }, [buildingName, floor, room]);
 
-    return <a onClick={openImage}>
-        {errored ? <Typography>Failed to load map preview</Typography> : <img
-        src={`https://dygz37jdyaml.cloudfront.net/images/utd-room-maps-2021-05-04/${buildingName}_${floor}.${room}.png`}
-        alt="map" onError={() => setErrored(true)} style={{cursor: "pointer", display: "block"}}/>}
-        <Button variant="contained">Locate Room on Map</Button>
-    </a>
+    return <>
+        <Typography variant="subtitle1">{buildingName}</Typography>
+        <a onClick={openImage}>
+            {errored ? <Typography>Failed to load map preview</Typography> : <img
+                src={`https://dygz37jdyaml.cloudfront.net/images/utd-room-maps-2021-05-04/${buildingName}_${floor}.${room}.png`}
+                alt="map" onError={() => setErrored(true)} style={{cursor: "pointer", display: "block"}}/>}
+            <Button variant="contained">Locate Room on Map</Button>
+        </a>
+    </>;
 }

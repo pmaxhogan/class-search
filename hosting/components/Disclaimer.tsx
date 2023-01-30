@@ -10,7 +10,6 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
     bgcolor: 'background.paper',
     boxShadow: 24,
     p: 4,
@@ -31,13 +30,13 @@ export default function Disclaimer() {
                 <Typography variant="h3" component="h2">
                     Disclaimer
                 </Typography>
-                <Typography variant="h5">
+                <Typography>
                     <ul>
                         <li>Data is provided on a best-effort from CourseBook, and may be <b>out of date or wrong</b>
                         </li>
                         <li>A room may appear available but be in use by a class, professor, TA, staff, etc.</li>
                         <li>A room may not be open to the public even if it is not in use</li>
-                        <li>Please be respectful to others and be <b>quiet</b> if others are nearby</li>
+                        <li>Please be respectful and be <b>quiet</b> if others are nearby</li>
                     </ul>
                 </Typography>
                 <Button variant="contained" onClick={handleClose} size="large">Got it</Button>

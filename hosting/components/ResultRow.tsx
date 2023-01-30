@@ -10,10 +10,9 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import PortraitIcon from '@mui/icons-material/Portrait';
 import NumbersIcon from '@mui/icons-material/Numbers';
 import InfoIcon from '@mui/icons-material/Info';
-import {Grid} from "@mui/material";
+import {Grid, Tooltip} from "@mui/material";
 import IconLabeledText from "./IconLabeledText";
 import {isoToDurationUntilString, getWhenItOccurs, getStatusText} from "../lib/dateTimeStuff";
-
 
 
 export default function ResultRow({results, startDate}) {
@@ -24,6 +23,15 @@ export default function ResultRow({results, startDate}) {
     const statusText = getStatusText(result);
 
     const whenItOccurs = getWhenItOccurs(result);
+
+    const courseCodesFull = results.map(result => result.courseSection.course.prefix + " " + result.courseSection.course.code + "." + result.courseSection.section.number).join(", ");
+    let courseCodes;
+    if (courseCodesFull.includes("BMEN")) console.log("result.length > 2", result);
+    if (result.length > 2) {
+        courseCodes = result.courseSection.course.prefix + " " + result.courseSection.course.code + "." + result.courseSection.section.number + ", ...";
+    } else {
+        courseCodes = courseCodesFull;
+    }
 
     const {section, course} = result.courseSection;
     return <Accordion>
@@ -43,7 +51,7 @@ export default function ResultRow({results, startDate}) {
                 </Grid>
                 <Grid item xs={12} sm={4}>
                     <IconLabeledText icon={<NumbersIcon/>}
-                                     label={results.map(result => course.prefix + " " + course.code + "." + section.number).join(", ")}/>
+                                     label={courseCodes}/>
                 </Grid>
             </Grid>
         </AccordionSummary>
@@ -61,7 +69,14 @@ export default function ResultRow({results, startDate}) {
                 </Grid>
                 <Grid item xs={12} sm={6}>
                     <IconLabeledText icon={<InfoIcon/>}
-                                     label={statusText}/>
+                                     label={statusText} tooltip="Status"/>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <IconLabeledText icon={<NumbersIcon/>}
+                                     label={courseCodesFull}/>
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                    <IconLabeledText icon={<TimerIcon/>} label={timerLabel}/>
                 </Grid>
             </Grid>
         </AccordionDetails>
