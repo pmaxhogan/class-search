@@ -6,6 +6,7 @@ import ResultRow from "./ResultRow";
 import Typography from "@mui/material/Typography";
 import TimeGap from "./TimeGap";
 import {endingTimeOfSection, timeAllowance} from "../lib/dateTimeStuff";
+import {LinearProgress} from "@mui/material";
 
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -118,6 +119,6 @@ export default function RoomResultRows({roomName, startDate}) {
                 </div>
             )}</div>
     } else {
-        return <p>Loading...</p>
+        return <LinearProgress />
     }
 }

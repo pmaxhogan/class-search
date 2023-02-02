@@ -35,7 +35,6 @@ export default function BuildingRow({room, nextMeetings, startDate, searchRoom})
 
     let freeAt = null;
     if (isBusy) {
-        const nextMeetingDate = new Date(nextMeeting);
         for (const nextMeetingResult of nextMeetings) {
             const startsAt = new Date(nextMeetingResult.nextMeeting);
             if (freeAt && startsAt.getTime() > freeAt.getTime() + timeAllowance) {
@@ -56,6 +55,10 @@ export default function BuildingRow({room, nextMeetings, startDate, searchRoom})
 
     const {building, floor, room: roomNumber} = strToBuildingFloorRoom(room);
 
+    const scheduleLabel = (section.time.start && section.time.end) ?
+        courseString + " @ " + section.time.start + " - " + section.time.end :
+        "unknown";
+
     return <Accordion>
         <AccordionSummary
             expandIcon={<ExpandMoreIcon/>}
@@ -70,11 +73,11 @@ export default function BuildingRow({room, nextMeetings, startDate, searchRoom})
                                      label={room}/>
                 </Grid>
                 <Grid item xs={12} sm={4}>
-                    <IconLabeledText icon={<TimerIcon/>} label={timerLabel}/>
+                    <IconLabeledText icon={<TimerIcon/>} label={timerLabel ?? "unknown"}/>
                 </Grid>
                 <Grid item xs={12} sm={4}>
                     <IconLabeledText icon={<ScheduleIcon/>}
-                                     label={courseString + " @ " + section.time.start + " - " + section.time.end}/>
+                                     label={scheduleLabel}/>
                 </Grid>
             </Grid>
         </AccordionSummary>
@@ -88,18 +91,18 @@ export default function BuildingRow({room, nextMeetings, startDate, searchRoom})
                             <CardContent>
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} sm={6}>
-                                        <IconLabeledText icon={<SchoolIcon/>} label={course.title}/>
+                                        <IconLabeledText icon={<SchoolIcon/>} label={course.title ?? "Unknown Title"}/>
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
-                                        <IconLabeledText icon={<PortraitIcon/>} label={section.instructor}/>
+                                        <IconLabeledText icon={<PortraitIcon/>} label={section.instructor ?? "Unknown Instructor"}/>
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <IconLabeledText icon={<CalendarMonthIcon/>}
-                                                         label={whenItOccurs}/>
+                                                         label={whenItOccurs ?? "Unknown"}/>
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <IconLabeledText icon={<InfoIcon/>}
-                                                         label={statusText} tooltip="Status"/>
+                                                         label={statusText ?? "Unknown"} tooltip="Status"/>
                                     </Grid>
                                 </Grid>
                             </CardContent>

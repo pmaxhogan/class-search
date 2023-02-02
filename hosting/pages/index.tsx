@@ -7,7 +7,7 @@ import {
     Card,
     CardContent, CardHeader,
     Chip,
-    Grid,
+    Grid, LinearProgress,
     Stack,
     Switch,
     TextField
@@ -78,7 +78,18 @@ function IndexPage() {
 
     const {data: buildings, error: roomsError} = useSWR(`/api/rooms`, fetcher);
     if (roomsError) return <main>Failed to load</main>
-    if (!buildings) return <main>Loading...</main>
+    if (!buildings) return <Grid
+        container
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+        style={{height: "100vh"}}
+    >
+        <Grid item xs={12} sm={6} md={4}>
+            <LinearProgress/>
+        </Grid>
+    </Grid>
+        ;
 
     return (
         <main>

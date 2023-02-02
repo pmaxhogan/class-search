@@ -46,36 +46,36 @@ export default function ResultRow({results, startDate}) {
                     <IconLabeledText icon={<ScheduleIcon/>} label={section.time.start + " - " + section.time.end}/>
                 </Grid>
                 <Grid item xs={12} sm={4}>
-                    <IconLabeledText icon={<TimerIcon/>} label={timerLabel}/>
+                    <IconLabeledText icon={<TimerIcon/>} label={timerLabel ?? "Unknown"}/>
                 </Grid>
                 <Grid item xs={12} sm={4}>
                     <IconLabeledText icon={<NumbersIcon/>}
-                                     label={courseCodes}/>
+                                     label={courseCodes ?? "Unknown"}/>
                 </Grid>
             </Grid>
         </AccordionSummary>
         <AccordionDetails>
             <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
-                    <IconLabeledText icon={<SchoolIcon/>} label={course.title}/>
+                    <IconLabeledText icon={<SchoolIcon/>} label={course.title ?? "Unknown"}/>
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                    <IconLabeledText icon={<PortraitIcon/>} label={result.courseSection.section.instructor}/>
+                    <IconLabeledText icon={<PortraitIcon/>} label={result.courseSection.section.instructor ?? "Unknown"}/>
                 </Grid>
                 <Grid item xs={12} sm={6}>
                     <IconLabeledText icon={<CalendarMonthIcon/>}
-                                     label={whenItOccurs}/>
+                                     label={whenItOccurs ?? "Unknown"}/>
                 </Grid>
                 <Grid item xs={12} sm={6}>
                     <IconLabeledText icon={<InfoIcon/>}
-                                     label={statusText} tooltip="Status"/>
+                                     label={statusText ?? "Unknown"} tooltip="Status"/>
                 </Grid>
                 <Grid item xs={12} sm={6}>
                     <IconLabeledText icon={<NumbersIcon/>}
-                                     label={courseCodesFull}/>
+                                     label={courseCodesFull ?? "Unknown"}/>
                 </Grid>
                 <Grid item xs={12} sm={4}>
-                    <IconLabeledText icon={<TimerIcon/>} label={timerLabel}/>
+                    <IconLabeledText icon={<TimerIcon/>} label={timerLabel ?? "Unknown"}/>
                 </Grid>
             </Grid>
         </AccordionDetails>

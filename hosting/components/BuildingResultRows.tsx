@@ -2,6 +2,7 @@ import useSWR from "swr";
 import {fetcherMultiple} from "../lib/fetcher";
 import BuildingRow from "./BuildingRow";
 import {buildingFloorRoomToStr} from "../lib/misc";
+import {LinearProgress} from "@mui/material";
 
 const compareSections = (a, b) => {
     if (a && a.data && a.data.length && b && b.data && b.data.length) {
@@ -22,9 +23,9 @@ export default function BuildingResultRows({buildingName, rooms, startDate, sear
     const {data, error} = useSWR({urls: roomSections.map(section => `/api/study/room?room=${encodeURIComponent(section.roomStr)}` + (startDate ? `&start=${startDate}` : ""))}, fetcherMultiple);
     roomSections.forEach((section, idx) => data && (section.data = data[idx]));
 
-    return <div>{
+    return data ? <div>{
         roomSections.sort(compareSections).map(room => room.data &&
             <BuildingRow room={room.roomStr} nextMeetings={room.data} key={room.roomStr} startDate={startDate} searchRoom={searchRoom}/>
         )
-    }</div>;
+    }</div> : <LinearProgress />;
 }
