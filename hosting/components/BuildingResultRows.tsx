@@ -13,7 +13,7 @@ const compareSections = (a, b) => {
     }
 };
 
-export default function BuildingResultRows({buildingName, rooms, startDate}) {
+export default function BuildingResultRows({buildingName, rooms, startDate, searchRoom}) {
     const roomSections = [];
     rooms.forEach(room => {
         const roomStr = buildingFloorRoomToStr(room.building, room.floor, room.room);
@@ -24,7 +24,7 @@ export default function BuildingResultRows({buildingName, rooms, startDate}) {
 
     return <div>{
         roomSections.sort(compareSections).map(room => room.data &&
-            <BuildingRow room={room.roomStr} nextMeetings={room.data} key={room.roomStr} startDate={startDate}/>
+            <BuildingRow room={room.roomStr} nextMeetings={room.data} key={room.roomStr} startDate={startDate} searchRoom={searchRoom}/>
         )
     }</div>;
 }

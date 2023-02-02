@@ -18,7 +18,7 @@ import {DateTime} from "luxon";
 import BuildingResultRows from '../components/BuildingResultRows';
 import {fetcher} from '../lib/fetcher';
 import SelectARoomBuilding from "../components/SelectARoomBuilding";
-import {buildingFloorRoomToStr} from "../lib/misc";
+import {buildingFloorRoomToStr, strToBuildingFloorRoom} from "../lib/misc";
 import FloorMapOfRoomCard from "../components/FloormapOfRoomCard";
 
 // @ts-ignore
@@ -39,6 +39,15 @@ function IndexPage() {
         setFloor(null);
         setRoom(null);
     }
+
+
+    function searchRoom(room) {
+        const {building, floor, room: roomNumber} = strToBuildingFloorRoom(room);
+        setBuildingName(building);
+        setFloor(floor);
+        setRoom(roomNumber);
+    }
+
 
     function handleFloorChange(_, newValue) {
         setFloor(newValue);
@@ -159,7 +168,7 @@ function IndexPage() {
                             in {buildingName}</Typography>
                         <BuildingResultRows buildingName={buildingName}
                                             rooms={buildings.find(building => building.building === buildingName).rooms}
-                                            startDate={laterDateIso}/>
+                                            startDate={laterDateIso} searchRoom={searchRoom}/>
                     </>
                 ) : (dateIsValid ? <SelectARoomBuilding isBuilding={!!buildingName}/> : <p>Invalid date</p>)
                 }

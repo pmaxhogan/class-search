@@ -1,7 +1,7 @@
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import {Card, CardContent, CardHeader, Grid} from "@mui/material";
+import {Card, CardContent, CardHeader, Grid, Stack} from "@mui/material";
 import IconLabeledText from "./IconLabeledText";
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import TimerIcon from "@mui/icons-material/Timer";
@@ -21,8 +21,9 @@ import {
 } from "../lib/dateTimeStuff";
 import {strToBuildingFloorRoom} from "../lib/misc";
 import FloorMapOfRoomCard from "./FloormapOfRoomCard";
+import Button from "@mui/material/Button";
 
-export default function BuildingRow({room, nextMeetings, startDate}) {
+export default function BuildingRow({room, nextMeetings, startDate, searchRoom}) {
     const startDateAsDate = new Date(startDate);
     const nextMeetingResult = nextMeetings[0];
 
@@ -78,34 +79,37 @@ export default function BuildingRow({room, nextMeetings, startDate}) {
             </Grid>
         </AccordionSummary>
         <AccordionDetails>
-            <Grid container direction="row" spacing={2} alignItems="stretch">
-                <Grid item xs={12} sm={6}>
-                    <Card style={{height: "100%"}} raised>
-                        <CardHeader title="Next Class"/>
-                        <CardContent>
-                            <Grid container spacing={2}>
-                                <Grid item xs={12} sm={6}>
-                                    <IconLabeledText icon={<SchoolIcon/>} label={course.title}/>
+            <Stack direction="column" spacing={2}>
+                <Button variant="contained" size="large" onClick={() => searchRoom(room)} style={{width: "100%"}}>Search Room</Button>
+                <Grid container direction="row" spacing={2} alignItems="stretch">
+                    <Grid item xs={12} sm={6}>
+                        <Card style={{height: "100%"}} raised>
+                            <CardHeader title="Next Class"/>
+                            <CardContent>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12} sm={6}>
+                                        <IconLabeledText icon={<SchoolIcon/>} label={course.title}/>
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <IconLabeledText icon={<PortraitIcon/>} label={section.instructor}/>
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <IconLabeledText icon={<CalendarMonthIcon/>}
+                                                         label={whenItOccurs}/>
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <IconLabeledText icon={<InfoIcon/>}
+                                                         label={statusText} tooltip="Status"/>
+                                    </Grid>
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <IconLabeledText icon={<PortraitIcon/>} label={section.instructor}/>
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <IconLabeledText icon={<CalendarMonthIcon/>}
-                                                     label={whenItOccurs}/>
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <IconLabeledText icon={<InfoIcon/>}
-                                                     label={statusText} tooltip="Status"/>
-                                </Grid>
-                            </Grid>
-                        </CardContent>
-                    </Card>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <FloorMapOfRoomCard building={building} floor={floor} room={roomNumber} raised/>
+                    </Grid>
                 </Grid>
-                <Grid item xs={12} sm={6}>
-                    <FloorMapOfRoomCard building={building} floor={floor} room={roomNumber} raised/>
-                </Grid>
-            </Grid>
+            </Stack>
         </AccordionDetails>
     </Accordion>
 }
