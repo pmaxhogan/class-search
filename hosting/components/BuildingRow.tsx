@@ -85,7 +85,7 @@ export default function BuildingRow({room, nextMeetings, startDate, searchRoom})
             <Stack direction="column" spacing={2}>
                 <Button variant="contained" size="large" onClick={() => searchRoom(room)} style={{width: "100%"}}>Search Room</Button>
                 <Grid container direction="row" spacing={2} alignItems="stretch">
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} md={6} style={{paddingRight: "16px", paddingLeft: "0"}}>
                         <Card style={{height: "100%"}} raised>
                             <CardHeader title="Next Class"/>
                             <CardContent>
@@ -108,7 +108,7 @@ export default function BuildingRow({room, nextMeetings, startDate, searchRoom})
                             </CardContent>
                         </Card>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} md={6} style={{paddingRight: "16px", paddingLeft: "0"}}>
                         <FloorMapOfRoomCard building={building} floor={floor} room={roomNumber} raised/>
                     </Grid>
                 </Grid>

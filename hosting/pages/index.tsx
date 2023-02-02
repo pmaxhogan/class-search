@@ -96,7 +96,7 @@ function IndexPage() {
             <Stack direction="column" spacing={2}>
                 <Typography component="h1" variant="h1" sx={{textAlign: "center"}}>Study Room</Typography>
                 <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6} style={{paddingLeft: "0"}}>
+                    <Grid item xs={12} md={6} style={{paddingLeft: "0", paddingRight: "16px"}}>
                         <Card>
                             <CardHeader title="Select Building or Room"/>
                             <CardContent>
@@ -163,7 +163,7 @@ function IndexPage() {
                             </CardContent>
                         </Card>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} md={6} style={{paddingRight: "16px", paddingLeft: "0"}}>
                         {isValid() && floor && room &&
                             <FloorMapOfRoomCard building={buildingName} floor={floor} room={room}/>
                         }
