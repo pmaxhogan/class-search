@@ -73,8 +73,6 @@ function IndexPage() {
 
     return (
         <main>
-            <Disclaimer/>
-
             <Stack direction="column" spacing={2}>
                 <Typography component="h1" variant="h1" sx={{textAlign: "center"}}>Study Room</Typography>
                 <Grid container spacing={2}>

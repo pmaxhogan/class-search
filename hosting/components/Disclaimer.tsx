@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
@@ -17,7 +17,12 @@ const style = {
 };
 
 export default function Disclaimer() {
-    const [open, setOpen] = React.useState(localStorage.getItem("disclaimerAck") !== "true");
+    const [open, setOpen] = React.useState(false);
+
+    useEffect(() => {
+        setOpen(window.localStorage.getItem("disclaimerAck") !== "true");
+    }, []);
+
     const handleClose = () => {
         setOpen(false);
         localStorage.setItem("disclaimerAck", "true");
@@ -30,7 +35,7 @@ export default function Disclaimer() {
                 <Typography variant="h3" component="h2">
                     Disclaimer
                 </Typography>
-                <Typography>
+                <Typography component="div">
                     <ul>
                         <li>Data is provided on a best-effort from CourseBook, and may be <b>out of date or wrong</b>
                         </li>

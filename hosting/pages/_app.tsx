@@ -5,9 +5,10 @@ import '@fontsource/roboto/700.css';
 import Container from '@mui/material/Container';
 import {AdapterLuxon} from '@mui/x-date-pickers/AdapterLuxon';
 import {LocalizationProvider} from "@mui/x-date-pickers";
-import {Component} from "react";
+import React, {Component} from "react";
 import {ThemeProvider, createTheme} from "@mui/material/styles";
 import {CssBaseline} from "@mui/material";
+import Disclaimer from "../components/Disclaimer";
 
 const darkTheme = createTheme({
     palette: {
@@ -20,6 +21,7 @@ export default function MyApp({Component, pageProps}) {
         <Container>
             <LocalizationProvider dateAdapter={AdapterLuxon}>
                 <CssBaseline/>
+                <Disclaimer/>
                 <Component {...pageProps} />
             </LocalizationProvider>
         </Container>
