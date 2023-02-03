@@ -20,6 +20,7 @@ import {fetcher} from '../lib/fetcher';
 import SelectARoomBuilding from "../components/SelectARoomBuilding";
 import {buildingFloorRoomToStr, strToBuildingFloorRoom} from "../lib/misc";
 import FloorMapOfRoomCard from "../components/FloormapOfRoomCard";
+import ErrorCard from "../components/ErrorCard";
 
 // @ts-ignore
 const dedupe = arr => [...new Set(arr)];
@@ -77,7 +78,8 @@ function IndexPage() {
     const laterDateIso = (isDateLater && laterDate) ? new Date(laterDate).toISOString() : null;
 
     const {data: buildings, error: roomsError} = useSWR(`/api/rooms`, fetcher);
-    if (roomsError) return <main>Failed to load</main>
+    if (roomsError) return <ErrorCard text={"Failed to load rooms :C"}/>
+
     if (!buildings) return <Grid
         container
         direction="row"

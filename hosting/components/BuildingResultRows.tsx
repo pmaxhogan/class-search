@@ -3,9 +3,12 @@ import * as React from 'react';
 import {fetcherMultiple} from "../lib/fetcher";
 import BuildingRow from "./BuildingRow";
 import {buildingFloorRoomToStr} from "../lib/misc";
-import {LinearProgress, Stack, ToggleButton, ToggleButtonGroup} from "@mui/material";
+import {Card, CardContent, LinearProgress, Stack, ToggleButton, ToggleButtonGroup} from "@mui/material";
 import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
 import TimerIcon from '@mui/icons-material/Timer';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import Typography from "@mui/material/Typography";
+import ErrorCard from "./ErrorCard";
 
 export default function BuildingResultRows({buildingName, rooms, startDate, searchRoom}) {
     const [sortMode, setSortMode] = React.useState("a-z");
@@ -43,6 +46,10 @@ export default function BuildingResultRows({buildingName, rooms, startDate, sear
             setSortMode(newVal);
         }
     };
+
+    if(error) {
+        return <ErrorCard text={"Error loading building rooms :C"}/>
+    }
 
     return data ? <Stack spacing={2}>
         <ToggleButtonGroup

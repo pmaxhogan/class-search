@@ -7,6 +7,7 @@ import Typography from "@mui/material/Typography";
 import TimeGap from "./TimeGap";
 import {endingTimeOfSection, timeAllowance} from "../lib/dateTimeStuff";
 import {LinearProgress} from "@mui/material";
+import ErrorCard from "./ErrorCard";
 
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -89,8 +90,8 @@ export default function RoomResultRows({roomName, startDate}) {
         error: resultsError
     } = useSWR(`/api/study/room?room=${encodeURIComponent(roomName)}` + (startDate ? `&start=${startDate}` : ""), fetcher);
 
-    if (resultsError) {
-        return <p>Failed to load results :(</p>
+    if(resultsError) {
+        return <ErrorCard text={"Failed to load results :C"}/>
     }
 
     if (studyResults) {
