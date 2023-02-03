@@ -18,7 +18,7 @@ export default function BuildingResultRows({buildingName, rooms, startDate, sear
             return a.roomStr.localeCompare(b.roomStr);
         } else {
             if (a && a.data && a.data.length && b && b.data && b.data.length) {
-                return new Date(a.data[0].nextMeeting).getTime() - new Date(b.data[0].nextMeeting).getTime();
+                return new Date(b.data[0].nextMeeting).getTime() - new Date(a.data[0].nextMeeting).getTime();
             } else if (a && a.data && a.data.length) {
                 return -1;
             } else {
