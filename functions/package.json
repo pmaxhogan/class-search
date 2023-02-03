@@ -6,7 +6,9 @@
     "shell": "firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
+    "logs": "firebase functions:log",
+    "scrape": "rm -r cache && node lib/cli writesections",
+    "scrape-cache": "node lib/cli writesections"
   },
   "engines": {"node": "16"},
   "main": "index.js",
