@@ -3,6 +3,7 @@ import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import useLocalStorage from "../lib/useLocalStorage";
 
 
 const style = {
@@ -17,17 +18,7 @@ const style = {
 };
 
 export default function Disclaimer() {
-    const [open, setOpen] = React.useState(false);
-
-    useEffect(() => {
-        setOpen(window.localStorage.getItem("disclaimerAck") !== "true");
-    }, []);
-
-    const handleClose = () => {
-        setOpen(false);
-        localStorage.setItem("disclaimerAck", "true");
-    }
-
+    const [open, setOpen] = useLocalStorage("disclaimer-state", true);
 
     return (
         <Modal open={open}>
@@ -44,7 +35,7 @@ export default function Disclaimer() {
                         <li>Please be respectful and be <b>quiet</b> if others are nearby</li>
                     </ul>
                 </Typography>
-                <Button variant="contained" onClick={handleClose} size="large">Got it</Button>
+                <Button variant="contained" onClick={() => setOpen(false)} size="large">Got it</Button>
             </Box>
         </Modal>
     )
