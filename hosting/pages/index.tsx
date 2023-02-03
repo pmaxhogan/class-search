@@ -96,7 +96,7 @@ function IndexPage() {
     return (
         <main>
             <Stack direction="column" spacing={2}>
-                <Typography component="h1" variant="h1" sx={{textAlign: "center"}}>Study Room</Typography>
+                <Typography component="h1" variant="h1" sx={{textAlign: "center"}}>Study Room @ UTD</Typography>
                 <Grid container spacing={2}>
                     <Grid item xs={12} md={6} style={{paddingLeft: "0", paddingRight: "16px"}}>
                         <Card>

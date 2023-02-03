@@ -26,10 +26,11 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import Button from "@mui/material/Button";
-import useLocalStorage from "../lib/useLocalStorage";
 import {Check} from "@mui/icons-material";
 import MenuList from "@mui/material/MenuList";
 import {PaletteOptions} from "@mui/material/styles/createPalette";
+import HomeIcon from '@mui/icons-material/Home';
+import {useRouter} from "next/router";
 
 interface Props {
     /**
@@ -132,6 +133,7 @@ const themes: ThemeOptions[] = [
 
 export default function MyApp({Component, pageProps}) {
     const [currentTheme, setCurrentTheme] = useState(themes[0]);
+    const router = useRouter();
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -167,9 +169,17 @@ export default function MyApp({Component, pageProps}) {
                     color="inherit"
                     aria-label="menu"
                     sx={{mr: 2}}
+                    onClick={() => router.push("/")}
                 >
-                    <MenuIcon/>
+                    <HomeIcon/>
                 </IconButton>
+                <Button
+                    onClick={() => router.push("/about")}
+                    color="inherit"
+                >
+                    About
+                </Button>
+                <div style={{ flexGrow: 1 }}/>
                 <Button
                     aria-controls={open ? "demo-positioned-menu" : undefined}
                     aria-haspopup="true"

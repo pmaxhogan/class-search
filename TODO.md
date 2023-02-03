@@ -1,0 +1,35 @@
+# TODO
+- [x] tz bug
+- [x] FIX DUPLICATE KEY on SLC 1.214
+- [x] fix onAccept not firing on study later date when text is manually entered
+- [x] whole building search (when you don't specify room)
+- [ ] **handle results including class(es) currently in session**
+- [ ] make more components / abstractions
+- [ ] update coursebook every week
+- [x] make disclaimer global(???)
+- [x] add button to search specific room when clicking from buildingrow 
+- [ ] store state in URL
+- [x] dark theme
+- [x] fix 271 hours from now 
+- [x] fix negative gap
+- [x] fix "study later"
+- [ ] improve maps (are they just broken for labs / SCI)
+- [x] make it look nice (???)
+- [x] add disclaimers
+- [ ] add nearby/popular building suggestions
+- [ ] user config.able endToleranceMs
+- [ ] add "add to calendar" button??
+- [x] make error messages better looking / more common (add all errors from useswr)
+- [ ] expand accordions when only one result
+- [x] when there's an null or empty string professor, etc. put "Unknown" instead
+- [x] add LOADING to everything network related
+- [ ] lazy load images
+- [ ] cache API calls
+- [x] option to sort by free time or alpha
+- [ ] ensure both lists sorted (ResultRows), and add tooltips to both sorters (make it a component instead of copying)
+- [ ] html title element
+- [ ] opengraph things for social embeds
+- [x] toggleable dark theme
+- [ ] PWA???
+- [x] about page
+- [x] custom theme
