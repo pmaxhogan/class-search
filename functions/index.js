@@ -19,6 +19,12 @@ const rooms = await Promise.all(buildings.map(async building => {
 
 const app = e();
 
+app.use((req, res, next) => {
+    res.set("Cache-control", "public, max-age=3600");
+    next();
+});
+
+
 app.get("/api", (req, res) => res.send("Loaded " + sections.length + " sections"));
 
 app.get("/api/rooms", async (req, res) => {

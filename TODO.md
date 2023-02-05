@@ -3,28 +3,27 @@
 - [x] FIX DUPLICATE KEY on SLC 1.214
 - [x] fix onAccept not firing on study later date when text is manually entered
 - [x] whole building search (when you don't specify room)
-- [ ] **handle results including class(es) currently in session**
 - [x] make more components / abstractions
-- [ ] update coursebook every week
 - [x] make disclaimer global(???)
 - [x] add button to search specific room when clicking from buildingrow 
-- [ ] store state in URL
 - [x] dark theme
 - [x] fix 271 hours from now 
 - [x] fix negative gap
 - [x] fix "study later"
 - [x] make it look nice (???)
 - [x] add disclaimers
-- [ ] add nearby/popular building suggestions
-- [ ] add "add to calendar" button??
 - [x] make error messages better looking / more common (add all errors from useswr)
-- [ ] expand accordions when only one result
+- [x] expand accordions when only one result
 - [x] when there's a null or empty string professor, etc. put "Unknown" instead
 - [x] add LOADING to everything network related
-- [ ] cache API calls
 - [x] option to sort by free time or alpha
 - [x] <head> elements
 - [x] toggleable dark theme
-- [ ] PWA???
 - [x] about page
 - [x] custom theme
+- [x] cache API calls
+- [ ] **handle results including class(es) currently in session**
+- [ ] update coursebook every week
+- [ ] store state in URL
+- [ ] add nearby/popular building suggestions
+- [ ] add "add to calendar" button??
