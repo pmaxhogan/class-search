@@ -3,11 +3,9 @@ import * as React from 'react';
 import {fetcherMultiple} from "../lib/fetcher";
 import BuildingRow from "./BuildingRow";
 import {buildingFloorRoomToStr} from "../lib/misc";
-import {Card, CardContent, LinearProgress, Stack, ToggleButton, ToggleButtonGroup} from "@mui/material";
+import {LinearProgress, Stack, ToggleButton, ToggleButtonGroup} from "@mui/material";
 import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
 import TimerIcon from '@mui/icons-material/Timer';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import Typography from "@mui/material/Typography";
 import ErrorCard from "./ErrorCard";
 
 export default function BuildingResultRows({buildingName, rooms, startDate, searchRoom}) {
@@ -25,7 +23,7 @@ export default function BuildingResultRows({buildingName, rooms, startDate, sear
                 return 1;
             }
         }
-    };
+    }
 
     const roomSections = [];
     rooms.forEach(room => {
@@ -47,7 +45,7 @@ export default function BuildingResultRows({buildingName, rooms, startDate, sear
         }
     };
 
-    if(error) {
+    if (error) {
         return <ErrorCard text={"Error loading building rooms :C"}/>
     }
 

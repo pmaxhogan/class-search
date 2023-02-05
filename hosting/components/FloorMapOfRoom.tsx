@@ -21,8 +21,8 @@ export default function FloorMapOfRoom({buildingName, floor, room}) {
         <a onClick={openImage}>
             <Stack spacing={1}>
                 {errored ? <Stack direction="row" alignItems="center" spacing={1}>
-                    <WarningIcon/><Typography> Unable to load map :C</Typography>
-                </Stack> :
+                        <WarningIcon/><Typography> Unable to load map :C</Typography>
+                    </Stack> :
                     <Button variant="text" style={{alignSelf: "baseline", padding: "0"}}><img
                         src={`https://dygz37jdyaml.cloudfront.net/images/utd-room-maps-2021-05-04/${buildingName}_${floor}.${room}.png`}
                         alt="map" onError={() => setErrored(true)}

@@ -83,7 +83,8 @@ export default function BuildingRow({room, nextMeetings, startDate, searchRoom})
         </AccordionSummary>
         <AccordionDetails>
             <Stack direction="column" spacing={2}>
-                <Button variant="contained" size="large" onClick={() => searchRoom(room)} style={{width: "100%"}}>Search Room</Button>
+                <Button variant="contained" size="large" onClick={() => searchRoom(room)} style={{width: "100%"}}>Search
+                    Room</Button>
                 <Grid container direction="row" spacing={2} alignItems="stretch">
                     <Grid item xs={12} md={6} style={{paddingRight: "16px", paddingLeft: "0"}}>
                         <Card style={{height: "100%"}} raised>
@@ -94,7 +95,8 @@ export default function BuildingRow({room, nextMeetings, startDate, searchRoom})
                                         <IconLabeledText icon={<SchoolIcon/>} label={course.title ?? "Unknown Title"}/>
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
-                                        <IconLabeledText icon={<PortraitIcon/>} label={section.instructor ?? "Unknown Instructor"}/>
+                                        <IconLabeledText icon={<PortraitIcon/>}
+                                                         label={section.instructor ?? "Unknown Instructor"}/>
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <IconLabeledText icon={<CalendarMonthIcon/>}

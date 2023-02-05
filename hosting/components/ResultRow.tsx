@@ -60,7 +60,8 @@ export default function ResultRow({results, startDate}) {
                     <IconLabeledText icon={<SchoolIcon/>} label={course.title ?? "Unknown"}/>
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                    <IconLabeledText icon={<PortraitIcon/>} label={result.courseSection.section.instructor ?? "Unknown"}/>
+                    <IconLabeledText icon={<PortraitIcon/>}
+                                     label={result.courseSection.section.instructor ?? "Unknown"}/>
                 </Grid>
                 <Grid item xs={12} sm={6}>
                     <IconLabeledText icon={<CalendarMonthIcon/>}

@@ -1,13 +1,14 @@
 import React, {useState} from 'react'
 import useSWR from "swr";
 import RoomResultRows from "../components/RoomResultRows";
-import Disclaimer from "../components/Disclaimer";
 import {
     Autocomplete,
     Card,
-    CardContent, CardHeader,
+    CardContent,
+    CardHeader,
     Chip,
-    Grid, LinearProgress,
+    Grid,
+    LinearProgress,
     Stack,
     Switch,
     TextField

@@ -90,7 +90,7 @@ export default function RoomResultRows({roomName, startDate}) {
         error: resultsError
     } = useSWR(`/api/study/room?room=${encodeURIComponent(roomName)}` + (startDate ? `&start=${startDate}` : ""), fetcher);
 
-    if(resultsError) {
+    if (resultsError) {
         return <ErrorCard text={"Failed to load results :C"}/>
     }
 
@@ -120,6 +120,6 @@ export default function RoomResultRows({roomName, startDate}) {
                 </div>
             )}</div>
     } else {
-        return <LinearProgress />
+        return <LinearProgress/>
     }
 }

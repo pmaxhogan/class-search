@@ -6,7 +6,7 @@ import Container from "@mui/material/Container";
 import {AdapterLuxon} from "@mui/x-date-pickers/AdapterLuxon";
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import React, {Component, useEffect, useState} from "react";
-import {ThemeProvider, createTheme} from "@mui/material/styles";
+import {createTheme, ThemeProvider} from "@mui/material/styles";
 import {
     AppBar,
     CssBaseline,
@@ -24,7 +24,6 @@ import Disclaimer from "../components/Disclaimer";
 import Box from "@mui/material/Box";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
 import Button from "@mui/material/Button";
 import {Check} from "@mui/icons-material";
 import MenuList from "@mui/material/MenuList";
@@ -179,7 +178,7 @@ export default function MyApp({Component, pageProps}) {
                 >
                     About
                 </Button>
-                <div style={{ flexGrow: 1 }}/>
+                <div style={{flexGrow: 1}}/>
                 <Button
                     aria-controls={open ? "demo-positioned-menu" : undefined}
                     aria-haspopup="true"
