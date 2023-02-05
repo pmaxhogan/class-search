@@ -23,7 +23,7 @@ import {strToBuildingFloorRoom} from "../lib/misc";
 import FloorMapOfRoomCard from "./FloormapOfRoomCard";
 import Button from "@mui/material/Button";
 
-export default function BuildingRow({room, nextMeetings, startDate, searchRoom}) {
+export default function BuildingRow({room, nextMeetings, startDate, searchRoom, expanded=false}) {
     const startDateAsDate = new Date(startDate);
     const nextMeetingResult = nextMeetings[0];
 
@@ -59,7 +59,7 @@ export default function BuildingRow({room, nextMeetings, startDate, searchRoom})
         courseString + " @ " + section.time.start + " - " + section.time.end :
         "unknown";
 
-    return <Accordion>
+    return <Accordion defaultExpanded={expanded}>
         <AccordionSummary
             expandIcon={<ExpandMoreIcon/>}
             aria-controls="panel1a-content"

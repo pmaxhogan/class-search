@@ -17,15 +17,14 @@
 - [x] make it look nice (???)
 - [x] add disclaimers
 - [ ] add nearby/popular building suggestions
-- [ ] user config.able endToleranceMs
 - [ ] add "add to calendar" button??
 - [x] make error messages better looking / more common (add all errors from useswr)
 - [ ] expand accordions when only one result
-- [x] when there's an null or empty string professor, etc. put "Unknown" instead
+- [x] when there's a null or empty string professor, etc. put "Unknown" instead
 - [x] add LOADING to everything network related
 - [ ] cache API calls
 - [x] option to sort by free time or alpha
-- [ ] <head> elements
+- [x] <head> elements
 - [x] toggleable dark theme
 - [ ] PWA???
 - [x] about page

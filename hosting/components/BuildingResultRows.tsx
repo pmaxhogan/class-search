@@ -49,6 +49,8 @@ export default function BuildingResultRows({buildingName, rooms, startDate, sear
         return <ErrorCard text={"Error loading building rooms :C"}/>
     }
 
+    const sectionsWithData = data && roomSections.sort(compareSections).filter(room => room.data);
+
     return data ? <Stack spacing={2}>
         <ToggleButtonGroup
             value={sortMode}
@@ -64,9 +66,9 @@ export default function BuildingResultRows({buildingName, rooms, startDate, sear
             </ToggleButton>
         </ToggleButtonGroup>
         <div>
-            {roomSections.sort(compareSections).map(room => room.data &&
+            {sectionsWithData.map(room =>
                 <BuildingRow room={room.roomStr} nextMeetings={room.data} key={room.roomStr} startDate={startDate}
-                             searchRoom={searchRoom}/>
+                             searchRoom={searchRoom} expanded={sectionsWithData.length === 1}/>
             )}
         </div>
     </Stack> : <LinearProgress/>;

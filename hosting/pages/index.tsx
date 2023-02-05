@@ -22,6 +22,7 @@ import SelectARoomBuilding from "../components/SelectARoomBuilding";
 import {buildingFloorRoomToStr, strToBuildingFloorRoom} from "../lib/misc";
 import FloorMapOfRoomCard from "../components/FloormapOfRoomCard";
 import ErrorCard from "../components/ErrorCard";
+import Head from "next/head";
 
 // @ts-ignore
 const dedupe = arr => [...new Set(arr)];
@@ -94,8 +95,25 @@ function IndexPage() {
     </Grid>
         ;
 
+    const pageTitleSuffix = room ? fullRoomName : buildingName ? buildingName : "";
+    const pageTitle = `Study Room @ UTD${pageTitleSuffix ? " | " + pageTitleSuffix : ""}`;
+
     return (
         <main>
+            <Head>
+                <title>{pageTitle}</title>
+                <meta name="description" content="Find a study room at UTD"/>
+                <meta property="og:title" content={pageTitle}/>
+                <meta property="og:description" content="Find a study room at UTD"/>
+
+                <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"/>
+                <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"/>
+                <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"/>
+                <link rel="manifest" href="/site.webmanifest"/>
+                <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"/>
+                <meta name="msapplication-TileColor" content="#da532c"/>
+                <meta name="theme-color" content="#ffffff"/>
+            </Head>
             <Stack direction="column" spacing={2}>
                 <Typography component="h1" variant="h1" sx={{textAlign: "center"}}>Study Room @ UTD</Typography>
                 <Grid container spacing={2}>
