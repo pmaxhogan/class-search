@@ -13,7 +13,6 @@
 - [x] fix 271 hours from now 
 - [x] fix negative gap
 - [x] fix "study later"
-- [ ] improve maps (are they just broken for labs / SCI)
 - [x] make it look nice (???)
 - [x] add disclaimers
 - [ ] add nearby/popular building suggestions
