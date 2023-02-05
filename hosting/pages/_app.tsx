@@ -7,127 +7,19 @@ import {AdapterLuxon} from "@mui/x-date-pickers/AdapterLuxon";
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import React, {Component, useEffect, useState} from "react";
 import {createTheme, ThemeProvider} from "@mui/material/styles";
-import {
-    AppBar,
-    CssBaseline,
-    Fab,
-    Fade,
-    ListItemIcon,
-    ListItemText,
-    Menu,
-    MenuItem,
-    styled,
-    Toolbar
-} from "@mui/material";
-import useScrollTrigger from "@mui/material/useScrollTrigger";
+import {AppBar, CssBaseline, Fab, ListItemIcon, ListItemText, Menu, MenuItem, styled, Toolbar} from "@mui/material";
 import Disclaimer from "../components/Disclaimer";
-import Box from "@mui/material/Box";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import {Check} from "@mui/icons-material";
 import MenuList from "@mui/material/MenuList";
-import {PaletteOptions} from "@mui/material/styles/createPalette";
 import HomeIcon from '@mui/icons-material/Home';
 import {useRouter} from "next/router";
-
-interface Props {
-    /**
-     * Injected by the documentation to work in an iframe.
-     * You won"t need it on your project.
-     */
-    window?: () => Window;
-    children: React.ReactElement;
-}
-
-function ScrollTop(props: Props) {
-    const {children, window} = props;
-    // Note that you normally won"t need to set the window ref as useScrollTrigger
-    // will default to window.
-    // This is only being set here because the demo is in an iframe.
-    const trigger = useScrollTrigger({
-        target: window ? window() : undefined,
-        disableHysteresis: true,
-        threshold: 100,
-    });
-
-    const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
-        const anchor = (
-            (event.target as HTMLDivElement).ownerDocument || document
-        ).querySelector("#back-to-top-anchor");
-
-        if (anchor) {
-            anchor.scrollIntoView({
-                block: "center",
-            });
-        }
-    };
-
-    return (
-        <Fade in={trigger}>
-            <Box
-                onClick={handleClick}
-                role="presentation"
-                sx={{position: "fixed", bottom: 16, right: 16}}
-            >
-                {children}
-            </Box>
-        </Fade>
-    );
-}
+import {ScrollTop} from "../components/ScrollTop";
+import {themes} from "../lib/themes";
 
 const Offset = styled("div")(({theme}) => theme.mixins.toolbar);
-
-type ThemeOptions = {
-    options: PaletteOptions,
-    name: string
-}
-
-const themes: ThemeOptions[] = [
-    {
-        name: "Dark",
-        options: {
-            mode: "dark"
-        }
-    },
-    {
-        name: "Light",
-        options: {
-            mode: "light"
-        },
-    },
-    {
-        name: "Blue",
-        options: {
-            mode: "dark",
-            primary: {
-                main: '#ffffff',
-            },
-            secondary: {
-                main: '#fabb2f',
-            },
-            background: {
-                default: '#040e24',
-                paper: '#032d58',
-            }
-        },
-    },
-    {
-        name: "Purple",
-        options: {
-            mode: "dark",
-            primary: {
-                main: '#ffffff',
-            },
-            secondary: {
-                main: '#63fc30',
-            },
-            background: {
-                default: '#1b052f',
-                paper: '#2b074d',
-            }
-        }
-    }];
 
 
 export default function MyApp({Component, pageProps}) {

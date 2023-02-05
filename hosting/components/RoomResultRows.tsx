@@ -8,9 +8,7 @@ import TimeGap from "./TimeGap";
 import {endingTimeOfSection, timeAllowance} from "../lib/dateTimeStuff";
 import {LinearProgress} from "@mui/material";
 import ErrorCard from "./ErrorCard";
-
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+import {fetcher} from "../lib/fetcher";
 
 const getAllCrosslisted = (courses, course) => courses.filter(course2 => JSON.stringify(course2.courseSection.section.location) === JSON.stringify(course2.courseSection.section.location) && course.nextMeeting === course2.nextMeeting)
 
@@ -84,7 +82,6 @@ const getResultRows = (dedupedResults, startDate) => {
 
 
 export default function RoomResultRows({roomName, startDate}) {
-
     const {
         data: studyResults,
         error: resultsError
