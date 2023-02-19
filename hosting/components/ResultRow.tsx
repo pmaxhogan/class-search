@@ -18,7 +18,7 @@ import {getStatusText, getWhenItOccurs, isoToDurationUntilString} from "../lib/d
 export default function ResultRow({results, startDate}) {
     const result = results[0];
     const durationUntilStr = isoToDurationUntilString(result.nextMeeting, startDate);
-    const timerLabel = durationUntilStr === "0m" ? "in progress" : durationUntilStr + " from " + (startDate ? " then" : " now");
+    const timerLabel = (durationUntilStr === "0m" || durationUntilStr.startsWith("-")) ? "in progress" : durationUntilStr + " from " + (startDate ? " then" : " now");
 
     const statusText = getStatusText(result);
 

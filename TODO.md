@@ -22,8 +22,10 @@
 - [x] about page
 - [x] custom theme
 - [x] cache API calls
-- [ ] **handle results including class(es) currently in session**
+- [x] fix bug with current data
+- [x] **handle results including class(es) currently in session**
 - [ ] update coursebook every week
 - [ ] store state in URL
 - [ ] add nearby/popular building suggestions
 - [ ] add "add to calendar" button??
+- [ ] manually identify lab rooms

@@ -24,13 +24,14 @@ import FloorMapOfRoomCard from "./FloormapOfRoomCard";
 import Button from "@mui/material/Button";
 
 export default function BuildingRow({room, nextMeetings, startDate, searchRoom, expanded=false}) {
-    const startDateAsDate = new Date(startDate);
+    const startDateAsDate = new Date(startDate || new Date().toISOString());
     const nextMeetingResult = nextMeetings[0];
 
     if (!nextMeetingResult) return null;
 
     const {nextMeeting, courseSection: {course, section}} = nextMeetingResult;
 
+    console.log(new Date(nextMeeting).getTime(), startDateAsDate.getTime(), timeAllowance, startDate);
     const isBusy = new Date(nextMeeting).getTime() < startDateAsDate.getTime() + timeAllowance;
 
     let freeAt = null;
