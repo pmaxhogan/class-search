@@ -201,7 +201,7 @@ function IndexPage() {
 
                 {isValid() ? (
                     (floor && room) ? <>
-                        {(isPrivateRoom || true) &&
+                        {isPrivateRoom &&
                             <Alert severity="warning">This room is a private or lab room, and may be inaccessible to you.</Alert>}
                         <Typography component="h2" variant="h2" sx={{textAlign: "center"}}>Next Classes</Typography>
                         <RoomResultRows roomName={fullRoomName} startDate={laterDateIso}/>
