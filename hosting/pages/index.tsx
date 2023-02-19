@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import useSWR from "swr";
 import RoomResultRows from "../components/RoomResultRows";
 import {
+    Alert,
     Autocomplete,
     Card,
     CardContent,
@@ -35,6 +36,8 @@ function IndexPage() {
     const [laterDate, setLaterDate] = useState(null);
     const [dateElementVal, setDateElementVal] = useState(null);
     const [dateIsValid, setDateIsValid] = useState(true);
+
+    const {data: privateRooms, error: privateRoomsError} = useSWR(`/api/privaterooms`, fetcher);
 
 
     function handleBuildingChange(_, newValue) {
@@ -97,6 +100,9 @@ function IndexPage() {
 
     const pageTitleSuffix = room ? fullRoomName : buildingName ? buildingName : "";
     const pageTitle = `Study Room @ UTD${pageTitleSuffix ? " | " + pageTitleSuffix : ""}`;
+
+
+    const isPrivateRoom = room && privateRooms && privateRooms.includes(fullRoomName);
 
     return (
         <main>
@@ -191,8 +197,12 @@ function IndexPage() {
                     </Grid>
                 </Grid>
 
+                {privateRoomsError && <Alert severity="warning">Could not load room accessibility information.</Alert>}
+
                 {isValid() ? (
                     (floor && room) ? <>
+                        {(isPrivateRoom || true) &&
+                            <Alert severity="warning">This room is a private or lab room, and may be inaccessible to you.</Alert>}
                         <Typography component="h2" variant="h2" sx={{textAlign: "center"}}>Next Classes</Typography>
                         <RoomResultRows roomName={fullRoomName} startDate={laterDateIso}/>
                     </> : <>

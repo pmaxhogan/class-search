@@ -7,6 +7,7 @@ import e from "express";
 import {nextMeetingsInLocation} from "./lib/findRooms/nextMeetingInLocation.js";
 import {getBuildings} from "./lib/findRooms/getBuildings.js";
 import {getRoomsInBuilding} from "./lib/findRooms/getRooms.js";
+import privateRooms from "./privateRooms.json"  assert { type: "json" };
 import {coursebookTimeZone} from "./lib/consts.js";
 import {cloneDate} from "./lib/findRooms/nextMeetings.js";
 
@@ -54,6 +55,10 @@ app.get("/api/study/room", async (req, res) => {
     const meetings = await nextMeetingsInLocation({building, room: roomNum, floor: floor}, startDateTime, endToleranceMs);
     if (!meetings) return res.status(404).send("No classes found in room " + roomStr);
     res.json(meetings);
+});
+
+app.get("/api/privaterooms", (req, res) => {
+    res.json(privateRooms);
 });
 
 export const api = functions.https.onRequest(app);

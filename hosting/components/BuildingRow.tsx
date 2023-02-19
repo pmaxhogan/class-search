@@ -1,7 +1,7 @@
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import {Card, CardContent, CardHeader, Grid, Stack} from "@mui/material";
+import {Alert, Card, CardContent, CardHeader, Grid, Stack, useTheme} from "@mui/material";
 import IconLabeledText from "./IconLabeledText";
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import TimerIcon from "@mui/icons-material/Timer";
@@ -22,10 +22,16 @@ import {
 import {strToBuildingFloorRoom} from "../lib/misc";
 import FloorMapOfRoomCard from "./FloormapOfRoomCard";
 import Button from "@mui/material/Button";
+import useSWR from "swr";
+import {fetcher} from "../lib/fetcher";
+import ErrorCard from "./ErrorCard";
 
 export default function BuildingRow({room, nextMeetings, startDate, searchRoom, expanded=false}) {
     const startDateAsDate = new Date(startDate || new Date().toISOString());
     const nextMeetingResult = nextMeetings[0];
+    const {data: privateRooms, error: privateRoomsError} = useSWR(`/api/privaterooms`, fetcher);
+
+    const isPrivateRoom = privateRooms?.includes(room);
 
     if (!nextMeetingResult) return null;
 
@@ -60,11 +66,16 @@ export default function BuildingRow({room, nextMeetings, startDate, searchRoom, 
         courseString + " @ " + section.time.start + " - " + section.time.end :
         "unknown";
 
+    const theme = useTheme();
+
+    const style = (isPrivateRoom || privateRoomsError) ? {border: "1px solid " + theme.palette.warning.main} : {};
+
     return <Accordion defaultExpanded={expanded}>
         <AccordionSummary
             expandIcon={<ExpandMoreIcon/>}
             aria-controls="panel1a-content"
             id="panel1a-header"
+            sx={style}
         >
             <Grid container spacing={2} direction="row"
                   justifyContent="space-between"
@@ -84,6 +95,8 @@ export default function BuildingRow({room, nextMeetings, startDate, searchRoom, 
         </AccordionSummary>
         <AccordionDetails>
             <Stack direction="column" spacing={2}>
+                {isPrivateRoom && <Alert severity="warning">This room is a private or lab room, and may be inaccessible to you.</Alert>}
+                {privateRoomsError && <Alert severity="warning">Could not load room accessibility information.</Alert>}
                 <Button variant="contained" size="large" onClick={() => searchRoom(room)} style={{width: "100%"}}>Search
                     Room</Button>
                 <Grid container direction="row" spacing={2} alignItems="stretch">
