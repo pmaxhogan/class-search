@@ -13,7 +13,7 @@ export default function DayPage() {
             </Typography>
             <Typography component="h2" variant="h2" sx={{textAlign: "center"}}>Who made it?</Typography>
             <Typography component="p" variant="body1" sx={{textAlign: "center"}}>
-                This website was made by <a href="http://maxhogan.dev/" style={{color: "inherit"}}>Max Hogan</a>! It is
+                This website was made by <a href="https://maxhogan.dev/web-apps/study-room-utd" style={{color: "inherit"}}>Max Hogan</a>! It is
                 open source and can be found on <a href="https://github.com/pmaxhogan/class-search"
                                                    style={{color: "inherit"}}>GitHub</a>.
             </Typography>
